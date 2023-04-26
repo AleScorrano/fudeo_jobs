@@ -1,3 +1,4 @@
+import 'package:annunci_lavoro_flutter/blocs/freelanceAds/bloc/freelance_ads_bloc.dart';
 import 'package:annunci_lavoro_flutter/blocs/jobAds/bloc/job_ads_bloc.dart';
 import 'package:annunci_lavoro_flutter/cubits/dark_mode_cubit.dart';
 import 'package:annunci_lavoro_flutter/models/job_positions_model.dart';
@@ -248,7 +249,9 @@ class _TabViewState extends State<TabView> {
     if (index == 1) {
       BlocProvider.of<JobAdsBloc>(context).jobAdsController.resetFilter();
     } else if (index == 0) {
-      //TODO implementare il reset per l'altro tab.
+      BlocProvider.of<FreelanceAdsBloc>(context)
+          .freeLanceAdsController
+          .resetFilter();
     }
   }
 }

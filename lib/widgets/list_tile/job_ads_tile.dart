@@ -27,12 +27,29 @@ class JobAdsTile extends StatefulWidget {
 class _JobAdsTileState extends State<JobAdsTile> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6),
+        color: widget.jobPosition != null
+            ? Theme.of(context).cardColor
+            : Colors.transparent,
+        boxShadow: widget.jobPosition != null
+            ? [
+                BoxShadow(
+                  color: Colors.black45,
+                  spreadRadius: 0,
+                  blurRadius: 0.9,
+                  offset: Offset(0, 2),
+                ),
+              ]
+            : [],
+      ),
       margin: const EdgeInsets.all(6),
       child: ListTile(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-        tileColor: Theme.of(context).cardColor,
+        tileColor: widget.jobPosition != null
+            ? Theme.of(context).cardColor
+            : Colors.transparent,
         enabled: widget.enabled,
         onTap: () => showCupertinoModalBottomSheet(
           topRadius: const Radius.circular(40),

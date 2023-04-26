@@ -12,14 +12,14 @@ class ShimmedList extends StatelessWidget {
       itemBuilder: (context, index) {
         if (index == 0) {
           return Shimmer.fromColors(
-            baseColor: Theme.of(context).hintColor.withOpacity(0.2),
-            highlightColor: Colors.grey.shade400,
+            baseColor: Theme.of(context).hintColor.withOpacity(0.8),
+            highlightColor: Colors.grey.shade500,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
                 children: [
                   const Icon(Icons.list, size: 30),
-                  shimmedContainer(200, 6),
+                  shimmedContainer(context, 250, 6),
                   const Divider(),
                 ],
               ),
@@ -30,20 +30,27 @@ class ShimmedList extends StatelessWidget {
         }
         return Shimmer.fromColors(
           baseColor: Theme.of(context).hintColor.withOpacity(0.2),
-          highlightColor: Colors.grey.shade400,
+          highlightColor: Colors.grey.shade200,
           child: child,
         );
       },
     );
   }
 
-  Widget shimmedContainer(double width, double height) => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          width: width,
-          height: height,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12), color: Colors.red),
+  Widget shimmedContainer(BuildContext context, double width, double height) =>
+      Shimmer.fromColors(
+        baseColor: Theme.of(context).hintColor.withOpacity(0.8),
+        highlightColor: Colors.grey.shade500,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
         ),
       );
 
@@ -60,7 +67,7 @@ class ShimmedList extends StatelessWidget {
                 width: 100,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.black),
+                  border: Border.all(color: Colors.grey.shade400),
                 ),
               ),
             ),

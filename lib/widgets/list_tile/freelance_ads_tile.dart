@@ -26,11 +26,29 @@ class FreelanceAdsTile extends StatefulWidget {
 class _FreelanceAdsTileState extends State<FreelanceAdsTile> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6),
+        color: widget.freeLancePosition != null
+            ? Theme.of(context).cardColor
+            : Colors.transparent,
+        boxShadow: widget.freeLancePosition != null
+            ? [
+                BoxShadow(
+                  color: Colors.black45,
+                  spreadRadius: 0,
+                  blurRadius: 0.9,
+                  offset: Offset(0, 2),
+                ),
+              ]
+            : [],
+      ),
       margin: const EdgeInsets.all(6),
-      elevation: 2,
       child: ListTile(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+          tileColor: widget.freeLancePosition != null
+              ? Theme.of(context).cardColor
+              : Colors.transparent,
           enabled: widget.enabled,
           onTap: () => showCupertinoModalBottomSheet(
                 topRadius: const Radius.circular(40),
