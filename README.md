@@ -20,3 +20,5 @@ FUNZIONALITA'
 - paginazione con infinitescroll.
 - iscrizione alla newsletter.
 - link ai corsi fudeo.
+- condividione annunci tramite app di terze parti.
+- feedback aptico 
