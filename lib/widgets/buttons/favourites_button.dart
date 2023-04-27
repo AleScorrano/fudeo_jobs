@@ -6,7 +6,11 @@ import 'package:annunci_lavoro_flutter/models/ads_model.dart';
 import 'package:annunci_lavoro_flutter/models/freelance_positions_model.dart';
 import 'package:annunci_lavoro_flutter/models/job_positions_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class FavoriteButton extends StatefulWidget {
   final AdsModel ads;
@@ -70,10 +74,10 @@ class FavoriteButtonState extends State<FavoriteButton>
                 });
               },
               icon: const Icon(
-                Icons.favorite,
-                size: 30,
+                FontAwesomeIcons.solidBookmark,
+                size: 24,
               ),
-              color: Colors.red,
+              color: Theme.of(context).primaryColor,
             )
           : IconButton(
               splashColor: Colors.transparent,
@@ -87,16 +91,17 @@ class FavoriteButtonState extends State<FavoriteButton>
                 });
               },
               icon: const Icon(
-                Icons.favorite_border,
-                size: 30,
+                FontAwesomeIcons.bookmark,
+                size: 24,
               ),
-              color: Colors.red,
+              color: Theme.of(context).primaryColor,
             ),
     );
   }
 
   void _addToFavourite() {
     setState(() {});
+
     if (widget.ads.runtimeType == JobPosition) {
       BlocProvider.of<JobAdsBloc>(context)
           .jobAdsController
@@ -110,6 +115,8 @@ class FavoriteButtonState extends State<FavoriteButton>
         FavouriteStoreModel(
             dataBaseId: widget.ads.metaData.dataBaseId,
             id: widget.ads.metaData.id));
+    HapticFeedback.heavyImpact();
+    _showSnackBar('Annuncio aggiunto ai preferiti');
   }
 
   void _removeFromFavourite() {
@@ -128,5 +135,23 @@ class FavoriteButtonState extends State<FavoriteButton>
         FavouriteStoreModel(
             dataBaseId: widget.ads.metaData.dataBaseId,
             id: widget.ads.metaData.id));
+    _showSnackBar('Annuncio rimosso dai preferiti');
+    HapticFeedback.heavyImpact();
   }
+
+  void _showSnackBar(String text) => showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.success(
+          iconPositionLeft: 8,
+          icon: Icon(Icons.check_circle, color: Colors.green),
+          iconRotationAngle: 0,
+          backgroundColor: Theme.of(context).cardColor,
+          message: text,
+          textStyle: Theme.of(context)
+              .textTheme
+              .titleLarge!
+              .copyWith(fontWeight: FontWeight.bold),
+        ),
+        displayDuration: Duration(seconds: 1),
+      );
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:annunci_lavoro_flutter/blocs/favourite_storage/bloc/favourites_storage_bloc.dart';
 import 'package:annunci_lavoro_flutter/blocs/jobAds/bloc/job_ads_bloc.dart';
 import 'package:annunci_lavoro_flutter/models/favourites_store_model.dart';
@@ -8,9 +10,11 @@ import 'package:annunci_lavoro_flutter/widgets/seniority_container.dart';
 import 'package:annunci_lavoro_flutter/widgets/team_container.dart';
 import 'package:easy_rich_text/easy_rich_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class JobAdsSheet extends StatefulWidget {
@@ -96,6 +100,7 @@ class _JobAdsSheetState extends State<JobAdsSheet> {
             ),
           ),
           _topPills(),
+          _shareButton(),
         ],
       ),
     );
@@ -344,6 +349,19 @@ class _JobAdsSheetState extends State<JobAdsSheet> {
         ),
       );
 
+  Widget _shareButton() => Positioned(
+        top: 6,
+        right: 20,
+        child: IconButton(
+          onPressed: () => Share.share(widget.jobPosition.adsUrl),
+          icon: Icon(
+            Platform.isIOS ? Icons.ios_share : Icons.share,
+            size: 30,
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
+      );
+
   Widget _description() => Padding(
         padding: const EdgeInsets.only(bottom: 26.0),
         child: Column(
@@ -408,6 +426,7 @@ class _JobAdsSheetState extends State<JobAdsSheet> {
         FavouriteStoreModel(
             dataBaseId: widget.jobPosition.metaData.dataBaseId,
             id: widget.jobPosition.metaData.id));
+    HapticFeedback.heavyImpact();
   }
 
   void _removeFromFavourite() {
@@ -420,6 +439,7 @@ class _JobAdsSheetState extends State<JobAdsSheet> {
         FavouriteStoreModel(
             dataBaseId: widget.jobPosition.metaData.dataBaseId,
             id: widget.jobPosition.metaData.id));
+    HapticFeedback.heavyImpact();
   }
 
   Future<void> _aplly() async {

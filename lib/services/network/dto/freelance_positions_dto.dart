@@ -13,6 +13,7 @@ class FreelancePositionsAdsDTO extends DTO {
     required super.adsTitle,
     required super.applyLink,
     required super.postedDate,
+    required super.adsUrl,
     required super.adsDescription,
     required this.jobRequest,
     required this.budget,
@@ -41,6 +42,7 @@ class FreelancePositionsAdsDTO extends DTO {
         relationship: DTO.getSelectObject(
                 data['properties']['Tipo di relazione']['select']) ??
             '-',
+        adsUrl: data['url'],
       );
 
   @override

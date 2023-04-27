@@ -13,6 +13,7 @@ class FreeLancePositionsAdsMapper
         adsTitle: dto.adsTitle,
         applyLink: dto.applyLink,
         postedDate: dto.postedDate,
+        adsUrl: dto.adsUrl,
         adsDescription: RichTextDescription(data: dto.adsDescription),
         jobRequest: RichTextDescription(data: dto.jobRequest),
         budget: RichTextDescription(data: dto.budget),

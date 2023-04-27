@@ -17,6 +17,7 @@ class JobsPositionsAdsDTO extends DTO {
     required super.adsTitle,
     required super.postedDate,
     required super.applyLink,
+    required super.adsUrl,
     required super.adsDescription,
     required this.company,
     required this.jobLocation,
@@ -52,6 +53,7 @@ class JobsPositionsAdsDTO extends DTO {
           applyLink:
               DTO.getSingleText(data['properties']['Come candidarsi']) ?? '-',
           webSiteURL: data['properties']['URL sito web']['url'],
+          adsUrl: data['url'],
           ral: DTO.getSelectObject(data['properties']['RAL']['select']));
 
   @override

@@ -16,6 +16,7 @@ class FreeLancePosition extends AdsModel {
     required super.adsTitle,
     required super.applyLink,
     required super.postedDate,
+    required super.adsUrl,
     required super.isFavourite,
     required super.adsDescription,
     required this.jobRequest,

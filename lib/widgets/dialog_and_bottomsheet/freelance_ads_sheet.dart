@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:annunci_lavoro_flutter/blocs/freelanceAds/bloc/freelance_ads_bloc.dart';
 import 'package:annunci_lavoro_flutter/cubits/dark_mode_cubit.dart';
 import 'package:annunci_lavoro_flutter/models/ads_description.dart';
@@ -6,9 +7,11 @@ import 'package:annunci_lavoro_flutter/models/freelance_positions_model.dart';
 import 'package:annunci_lavoro_flutter/widgets/dialog_and_bottomsheet/link_error_dialog.dart';
 import 'package:easy_rich_text/easy_rich_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../blocs/favourite_storage/bloc/favourites_storage_bloc.dart';
@@ -73,6 +76,7 @@ class _FreelanceAdsSheetState extends State<FreelanceAdsSheet> {
             ),
           ),
           _topPills(),
+          _shareButton(),
         ],
       ),
     );
@@ -341,6 +345,19 @@ class _FreelanceAdsSheetState extends State<FreelanceAdsSheet> {
         ),
       );
 
+  Widget _shareButton() => Positioned(
+        top: 6,
+        right: 20,
+        child: IconButton(
+          onPressed: () => Share.share(widget.freeLancePosition.adsUrl),
+          icon: Icon(
+            Platform.isIOS ? Icons.ios_share : Icons.share,
+            size: 30,
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
+      );
+
   void _addToFavourite() {
     widget.freeLancePosition.isFavourite = true;
     setState(() {});
@@ -351,6 +368,7 @@ class _FreelanceAdsSheetState extends State<FreelanceAdsSheet> {
         FavouriteStoreModel(
             dataBaseId: widget.freeLancePosition.metaData.dataBaseId,
             id: widget.freeLancePosition.metaData.id));
+    HapticFeedback.heavyImpact();
   }
 
   void _removeFromFavourite() {
@@ -363,6 +381,7 @@ class _FreelanceAdsSheetState extends State<FreelanceAdsSheet> {
         FavouriteStoreModel(
             dataBaseId: widget.freeLancePosition.metaData.dataBaseId,
             id: widget.freeLancePosition.metaData.id));
+    HapticFeedback.heavyImpact();
   }
 
   Future<void> _apply() async {

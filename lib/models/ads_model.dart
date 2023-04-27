@@ -8,6 +8,7 @@ abstract class AdsModel extends Equatable {
   final String adsTitle;
   final RichTextDescription adsDescription;
   final String applyLink;
+  final String adsUrl;
   final DateTime postedDate;
   bool isFavourite;
 
@@ -18,6 +19,7 @@ abstract class AdsModel extends Equatable {
     required this.applyLink,
     required this.postedDate,
     required this.isFavourite,
+    required this.adsUrl,
   });
 
   @override

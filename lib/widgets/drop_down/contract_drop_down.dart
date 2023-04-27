@@ -23,7 +23,7 @@ class _ContractDropDownState extends State<ContractDropDown> {
     return Stack(
       children: [
         Padding(
-          padding: const EdgeInsets.all(6.0),
+          padding: const EdgeInsets.all(4.0),
           child: DropdownButtonHideUnderline(
             child: DropdownButton2(
               isExpanded: true,

@@ -4,6 +4,8 @@ import 'package:annunci_lavoro_flutter/utils/sliver_appbar_delagate.dart';
 import 'package:annunci_lavoro_flutter/widgets/list_tile/freelance_ads_tile.dart';
 import 'package:annunci_lavoro_flutter/widgets/drop_down/nda_dropd_down.dart';
 import 'package:annunci_lavoro_flutter/widgets/drop_down/relationship_drop_down.dart';
+import 'package:annunci_lavoro_flutter/widgets/list_tile/job_ads_tile.dart';
+import 'package:annunci_lavoro_flutter/widgets/shimmers/shimmed_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -59,32 +61,48 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton:
-          _showHeader && _showTextFiled == false ? _fab() : null,
-      body: CustomScrollView(
-        physics: _showTextFiled ? const NeverScrollableScrollPhysics() : null,
-        controller: _adsListController,
-        slivers: [
-          _showHeader
-              ? SliverPersistentHeader(
-                  floating: true,
-                  delegate: SliverAppBarDelegate(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    minHeight: 120,
-                    maxHeight: 120,
-                    child: Column(
-                      children: [
-                        _header(),
-                        _actionsBar(),
-                      ],
-                    ),
-                  ),
-                )
-              : const SliverToBoxAdapter(),
-          _adsList(),
-        ],
-      ),
+    return BlocBuilder<FreelanceAdsBloc, FreelanceAdsState>(
+      buildWhen: (previous, current) =>
+          current is FetchInitialFreelanceAdsEvent ||
+          current is FetchedFreelanceAdsState,
+      builder: (context, state) {
+        if (state is InitfreelanceAdsState) {
+          return ShimmedList(child: JobAdsTile.shimmed());
+        } else if (state is ErrorFreelanceAdsState) {
+          return _errorWidget();
+        } else if (state is FetchedFreelanceAdsState ||
+            state is NoMoreFreelanceAdsState) {
+          return Scaffold(
+            floatingActionButton:
+                _showHeader && _showTextFiled == false ? _fab() : null,
+            body: CustomScrollView(
+              physics:
+                  _showTextFiled ? const NeverScrollableScrollPhysics() : null,
+              controller: _adsListController,
+              slivers: [
+                _showHeader
+                    ? SliverPersistentHeader(
+                        floating: true,
+                        delegate: SliverAppBarDelegate(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          minHeight: 120,
+                          maxHeight: 120,
+                          child: Column(
+                            children: [
+                              _header(),
+                              _actionsBar(),
+                            ],
+                          ),
+                        ),
+                      )
+                    : const SliverToBoxAdapter(),
+                _adsList(),
+              ],
+            ),
+          );
+        }
+        return const SizedBox();
+      },
     );
   }
 
@@ -317,8 +335,8 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
         ),
       );
 
-  Widget _fab() => FloatingActionButton(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+  Widget _fab() => FloatingActionButton.small(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         backgroundColor: Theme.of(context).primaryColor,
         onPressed: () => _adsListController.animateTo(0.0,
             duration: const Duration(milliseconds: 300), curve: Curves.easeOut),
@@ -352,6 +370,14 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
           ],
         ),
       );
+
+  Widget _errorWidget() => const Center(
+          child: Column(
+        children: [
+          Icon(Icons.error),
+          Text('Errore'),
+        ],
+      ));
 
   void _showField() {
     setState(() {

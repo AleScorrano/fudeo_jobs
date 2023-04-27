@@ -68,7 +68,7 @@ class SortButtonState extends State<SortButton> {
                       fontSize: 18),
               unselectedBorderColor: Colors.grey,
               selectedBorderColor: Colors.amber.shade700,
-              selectedColor: Theme.of(context).highlightColor,
+              selectedColor: Theme.of(context).primaryColorLight,
               unselectedColor: Theme.of(context).cardColor,
               buttonWidth: MediaQuery.of(context).size.width / 2 - 20,
               borderRadius: BorderRadius.circular(16),

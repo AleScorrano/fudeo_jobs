@@ -48,7 +48,7 @@ class App extends StatelessWidget {
 ThemeData _theme(BuildContext context) {
   final primaryColor = Color(0x027DFD).withOpacity(1);
   final primaryColorDark = Color(0x061D5C).withOpacity(1);
-  final highlightColor = Color(0xFFDE59).withOpacity(1);
+  final prymaryColorLight = Color(0xFFDE59).withOpacity(1);
   const secondaryColor = Colors.white;
   final onSecondaryColor = Colors.grey[100]!;
 
@@ -56,8 +56,9 @@ ThemeData _theme(BuildContext context) {
     scaffoldBackgroundColor: Colors.grey.shade200,
     primaryColor: primaryColor,
     primaryColorDark: primaryColorDark,
+    primaryColorLight: prymaryColorLight,
     secondaryHeaderColor: Colors.grey[300],
-    highlightColor: highlightColor,
+    highlightColor: prymaryColorLight,
     indicatorColor: Colors.black87,
     colorScheme: ColorScheme.light(
       primary: primaryColor,
@@ -90,14 +91,14 @@ ThemeData _theme(BuildContext context) {
 ThemeData _darkTheme(BuildContext context) {
   final primaryColorDark = const Color(0x027DFD).withOpacity(1);
   final primaryColor = Color(0x027DFD).withOpacity(1);
-  final highlightColor = const Color(0xFFDE59).withOpacity(1);
+  final prymaryColorlight = const Color(0xFFDE59).withOpacity(1);
   const secondaryColor = Colors.white;
   return ThemeData(
     scaffoldBackgroundColor: Color.fromARGB(255, 45, 45, 45),
     secondaryHeaderColor: Colors.grey.shade800,
     primaryColor: primaryColor,
     primaryColorDark: primaryColorDark,
-    highlightColor: highlightColor,
+    primaryColorLight: prymaryColorlight,
     colorScheme: ColorScheme.dark(
       primary: primaryColor,
       secondary: secondaryColor,
@@ -114,7 +115,7 @@ ThemeData _darkTheme(BuildContext context) {
       ),
     ),
     appBarTheme:
-        const AppBarTheme(backgroundColor: Color.fromARGB(255, 20, 20, 40)),
+        const AppBarTheme(backgroundColor: Color.fromARGB(255, 37, 37, 37)),
     textTheme: GoogleFonts.montserratTextTheme(
       const TextTheme(),
     ),

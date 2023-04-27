@@ -5,6 +5,7 @@ import 'package:annunci_lavoro_flutter/widgets/list_tile/job_ads_tile.dart';
 import 'package:annunci_lavoro_flutter/widgets/drop_down/contract_drop_down.dart';
 import 'package:annunci_lavoro_flutter/widgets/dialog_and_bottomsheet/modal_bottom_sort.dart';
 import 'package:annunci_lavoro_flutter/widgets/drop_down/seniority_drop_down.dart';
+import 'package:annunci_lavoro_flutter/widgets/shimmers/shimmed_list.dart';
 import 'package:annunci_lavoro_flutter/widgets/sort_icon.dart';
 import 'package:annunci_lavoro_flutter/widgets/drop_down/team_drop_down.dart';
 import 'package:flutter/cupertino.dart';
@@ -51,7 +52,7 @@ class _JobAdsPageState extends State<JobAdsPage> {
         }
         if (_adsListController.position.maxScrollExtent ==
             _adsListController.offset) {
-          BlocProvider.of<JobAdsBloc>(context).moreAds();
+          moreAds();
         }
       },
     );
@@ -59,32 +60,46 @@ class _JobAdsPageState extends State<JobAdsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton:
-          _showHeader && _showTextFiled == false ? _fab() : null,
-      body: CustomScrollView(
-        physics: _showTextFiled ? const NeverScrollableScrollPhysics() : null,
-        controller: _adsListController,
-        slivers: [
-          _showHeader
-              ? SliverPersistentHeader(
-                  floating: true,
-                  delegate: SliverAppBarDelegate(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    minHeight: 120,
-                    maxHeight: 120,
-                    child: Column(
-                      children: [
-                        _header(),
-                        _actionsBar(),
-                      ],
-                    ),
-                  ),
-                )
-              : const SliverToBoxAdapter(),
-          _adsList(),
-        ],
-      ),
+    return BlocBuilder<JobAdsBloc, JobAdsState>(
+      buildWhen: (previous, current) =>
+          current is FetchInitialJobAdsEvent || current is FetchedJobAdsState,
+      builder: (context, state) {
+        if (state is InitJobAdsState) {
+          return ShimmedList(child: JobAdsTile.shimmed());
+        } else if (state is ErrorJobAdsState) {
+          return _errorWidget();
+        } else if (state is FetchedJobAdsState || state is NoMoreJobAdsState) {
+          return Scaffold(
+            floatingActionButton:
+                _showHeader && _showTextFiled == false ? _fab() : null,
+            body: CustomScrollView(
+              physics:
+                  _showTextFiled ? const NeverScrollableScrollPhysics() : null,
+              controller: _adsListController,
+              slivers: [
+                _showHeader
+                    ? SliverPersistentHeader(
+                        floating: true,
+                        delegate: SliverAppBarDelegate(
+                          color: Theme.of(context).cardColor,
+                          minHeight: 106,
+                          maxHeight: 106,
+                          child: Column(
+                            children: [
+                              _header(),
+                              _actionsBar(),
+                            ],
+                          ),
+                        ),
+                      )
+                    : const SliverToBoxAdapter(),
+                _adsList(),
+              ],
+            ),
+          );
+        }
+        return const SizedBox();
+      },
     );
   }
 
@@ -95,7 +110,6 @@ class _JobAdsPageState extends State<JobAdsPage> {
           scrollDirection: Axis.horizontal,
           children: [
             _dropDownFilters(),
-            _sortButton(),
             _toggleSearchButton(),
             _showTextFiled ? _searchField() : const SizedBox(),
           ],
@@ -153,54 +167,61 @@ class _JobAdsPageState extends State<JobAdsPage> {
         ),
       );
 
-  Widget _sortButton() => IconButton(
-        onPressed: () => showModalBottomSheet(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-            context: context,
-            builder: (context) => const SortingModalBottomSheet()),
-        icon: const SortIcon(),
+  Widget _sortButton() => SizedBox(
+        height: 32,
+        child: TextButton(
+          onPressed: () => showModalBottomSheet(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14)),
+              context: context,
+              builder: (context) => const SortingModalBottomSheet()),
+          child: const SortIcon(),
+        ),
       );
 
-  Widget _header() => Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0, top: 20),
-            child: Row(
-              children: [
-                const Icon(Icons.list),
-                const SizedBox(
-                  width: 10,
-                ),
-                StreamBuilder<List<JobPosition>>(
-                  stream: BlocProvider.of<JobAdsBloc>(context)
-                      .jobAdsController
-                      .stream,
-                  builder: (context, snapshot) => snapshot.hasData
-                      ? Text(
-                          'Posizioni aperte  ${snapshot.data!.length}',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        )
-                      : Text(
-                          'Posizioni aperte aaa}',
-                          style:
-                              Theme.of(context).textTheme.titleLarge!.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                        ),
-                )
-              ],
+  Widget _header() => Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, top: 6),
+              child: Row(
+                children: [
+                  const Icon(Icons.list),
+                  const SizedBox(width: 10),
+                  StreamBuilder<List<JobPosition>>(
+                    stream: BlocProvider.of<JobAdsBloc>(context)
+                        .jobAdsController
+                        .stream,
+                    builder: (context, snapshot) => snapshot.hasData
+                        ? Text(
+                            'Posizioni aperte  ${snapshot.data!.length}',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          )
+                        : Text(
+                            'Posizioni aperte aaa}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                  ),
+                  Spacer(),
+                  _sortButton(),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 6),
-          _divider(),
-        ],
+            const SizedBox(height: 6),
+            _divider(),
+          ],
+        ),
       );
 
-  Widget _fab() => FloatingActionButton(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+  Widget _fab() => FloatingActionButton.small(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         backgroundColor: Theme.of(context).primaryColor,
         onPressed: () => _adsListController.animateTo(0.0,
             duration: const Duration(milliseconds: 300), curve: Curves.easeOut),
@@ -210,23 +231,20 @@ class _JobAdsPageState extends State<JobAdsPage> {
         ),
       );
 
-  Widget _dropDownFilters() => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            TeamDropDown(),
-            SeniorityDropDown(),
-            ContractDropDown(),
-          ],
-        ),
+  Widget _dropDownFilters() => Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          TeamDropDown(),
+          SeniorityDropDown(),
+          ContractDropDown(),
+        ],
       );
 
   Widget _divider() => Row(
         children: [
           Container(
             height: 2,
-            width: 210,
+            width: 200,
             color: Theme.of(context).primaryColorDark,
           ),
           Container(
@@ -315,7 +333,7 @@ class _JobAdsPageState extends State<JobAdsPage> {
       );
 
   Widget _loadingAdsWidget() => Padding(
-        padding: const EdgeInsets.all(30),
+        padding: const EdgeInsets.all(20),
         child: Center(
           child: CupertinoActivityIndicator(
               radius: 16, color: Theme.of(context).dividerColor),
@@ -329,23 +347,43 @@ class _JobAdsPageState extends State<JobAdsPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        content: Row(
-          children: [
-            const Icon(
-              Icons.info,
-              color: Colors.white,
-            ),
-            const SizedBox(width: 10),
-            Text(
-              'Hai visualizzato tutti gli annunci',
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: Colors.white),
-            ),
-          ],
+        content: ClipRRect(
+          child: Row(
+            children: [
+              const Icon(
+                Icons.info,
+                color: Colors.white,
+              ),
+              const SizedBox(width: 10),
+              Text(
+                'Hai visualizzato tutti gli annunci',
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Colors.white,
+                    overflow: TextOverflow.ellipsis),
+              ),
+            ],
+          ),
         ),
       );
+
+  Widget _errorWidget() => const Center(
+          child: Column(
+        children: [
+          Icon(Icons.error),
+          Text('Errore'),
+        ],
+      ));
+
+  void moreAds() {
+    BlocProvider.of<JobAdsBloc>(context).moreAds();
+    _adsListController.animateTo(
+      _adsListController.offset * 0.2,
+      duration: Duration(seconds: 2),
+      curve: Curves.easeOut,
+    );
+  }
 
   void _showField() {
     setState(() {
@@ -353,7 +391,7 @@ class _JobAdsPageState extends State<JobAdsPage> {
       _enableListTap = false;
       _searchFieldFocusNode.requestFocus();
     });
-    _actionBarController.animateTo(MediaQuery.of(context).size.width + 80,
+    _actionBarController.animateTo(MediaQuery.of(context).size.width,
         duration: const Duration(milliseconds: 500), curve: Curves.decelerate);
   }
 

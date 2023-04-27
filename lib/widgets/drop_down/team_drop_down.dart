@@ -23,7 +23,7 @@ class _TeamDropDownState extends State<TeamDropDown> {
     return Stack(
       children: [
         Padding(
-          padding: const EdgeInsets.all(6.0),
+          padding: const EdgeInsets.all(4.0),
           child: DropdownButtonHideUnderline(
             child: DropdownButton2(
               isExpanded: true,
@@ -100,7 +100,7 @@ class _TeamDropDownState extends State<TeamDropDown> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 height: 36,
-                width: 100,
+                width: 80,
               ),
               menuItemStyleData: const MenuItemStyleData(
                 height: 40,

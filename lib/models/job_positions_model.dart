@@ -22,6 +22,7 @@ class JobPosition extends AdsModel {
     required super.applyLink,
     required super.isFavourite,
     required super.adsDescription,
+    required super.adsUrl,
     required this.company,
     required this.jobLocation,
     required this.contractType,

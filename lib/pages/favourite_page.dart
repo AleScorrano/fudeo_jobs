@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:annunci_lavoro_flutter/blocs/favourites/bloc/favourites_bloc.dart';
 import 'package:annunci_lavoro_flutter/blocs/freelanceAds/bloc/freelance_ads_bloc.dart';
 import 'package:annunci_lavoro_flutter/blocs/jobAds/bloc/job_ads_bloc.dart';
@@ -43,10 +45,11 @@ class _FavouritePageState extends State<FavouritePage> {
           icon: Icon(
             Icons.chevron_left_rounded,
             size: 40,
-            color: Theme.of(context).highlightColor,
+            color: Theme.of(context).primaryColorLight,
           ),
         ),
         elevation: 0,
+        shadowColor: Colors.transparent,
         title: Text(
           'Annunci Salvati',
           style: Theme.of(context).textTheme.titleLarge!.copyWith(
@@ -57,10 +60,16 @@ class _FavouritePageState extends State<FavouritePage> {
         ),
         bottom: PreferredSize(
           preferredSize: const Size(double.maxFinite, 70),
-          child: Column(
-            children: [
-              _selctionButtons(),
-            ],
+          child: ClipRRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Column(
+                children: [
+                  Divider(thickness: 2),
+                  _selctionButtons(),
+                ],
+              ),
+            ),
           ),
         ),
       );
@@ -86,7 +95,7 @@ class _FavouritePageState extends State<FavouritePage> {
                 .copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
-                    color: Theme.of(context).primaryColorDark),
+                    color: Theme.of(context).primaryColor),
             selectedTextStyle: Theme.of(context)
                 .textTheme
                 .titleMedium!
@@ -94,11 +103,11 @@ class _FavouritePageState extends State<FavouritePage> {
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 18),
-            borderRadius: BorderRadius.circular(6),
-            selectedBorderColor: Theme.of(context).primaryColorDark,
-            unselectedBorderColor: Theme.of(context).primaryColorDark,
+            borderRadius: BorderRadius.circular(16),
+            selectedBorderColor: Theme.of(context).primaryColor,
+            unselectedBorderColor: Theme.of(context).primaryColor,
             selectedColor: Theme.of(context).primaryColorDark,
-            unselectedColor: Theme.of(context).cardColor,
+            unselectedColor: Theme.of(context).scaffoldBackgroundColor,
             buttonWidth: MediaQuery.of(context).size.width / 2 - 10,
           ),
         ),
@@ -179,41 +188,46 @@ class _FavouritePageState extends State<FavouritePage> {
       );
 
   Widget _jobAdsCount() => SliverPadding(
-        padding: const EdgeInsets.only(bottom: 20.0),
+        padding: const EdgeInsets.only(bottom: 20.0, top: 10),
         sliver: SliverToBoxAdapter(
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                color: Theme.of(context).secondaryHeaderColor,
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black38,
-                    blurRadius: 1,
-                    spreadRadius: 0.7,
-                    offset: Offset(0, 2),
-                  )
-                ]),
-            child: Row(
-              children: [
-                const Icon(Icons.list),
-                const SizedBox(
-                  width: 10,
+          child: ClipRRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    color: Theme.of(context).secondaryHeaderColor,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black38,
+                        blurRadius: 1,
+                        spreadRadius: 0.7,
+                        offset: Offset(0, 2),
+                      )
+                    ]),
+                child: Row(
+                  children: [
+                    const Icon(Icons.list),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    StreamBuilder<List<JobPosition>>(
+                      stream: BlocProvider.of<JobAdsBloc>(context)
+                          .jobAdsController
+                          .favstream,
+                      builder: (context, snapshot) => !snapshot.hasData
+                          ? const SizedBox()
+                          : Text(
+                              'Annunci per assunzioni:  ${snapshot.data!.length}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(fontWeight: FontWeight.bold),
+                            ),
+                    )
+                  ],
                 ),
-                StreamBuilder<List<JobPosition>>(
-                  stream: BlocProvider.of<JobAdsBloc>(context)
-                      .jobAdsController
-                      .favstream,
-                  builder: (context, snapshot) => !snapshot.hasData
-                      ? const SizedBox()
-                      : Text(
-                          'Annunci per assunzioni:  ${snapshot.data!.length}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
-                )
-              ],
+              ),
             ),
           ),
         ),
@@ -222,40 +236,45 @@ class _FavouritePageState extends State<FavouritePage> {
   Widget _freelanceAdsCount() => SliverPadding(
         padding: const EdgeInsets.symmetric(vertical: 20.0),
         sliver: SliverToBoxAdapter(
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Theme.of(context).secondaryHeaderColor,
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black38,
-                  blurRadius: 1,
-                  spreadRadius: 0.7,
-                  offset: Offset(0, 2),
-                )
-              ],
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.list),
-                const SizedBox(
-                  width: 10,
+          child: ClipRRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).secondaryHeaderColor,
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black38,
+                      blurRadius: 1,
+                      spreadRadius: 0.7,
+                      offset: Offset(0, 2),
+                    )
+                  ],
                 ),
-                StreamBuilder<List<FreeLancePosition>>(
-                  stream: BlocProvider.of<FreelanceAdsBloc>(context)
-                      .freeLanceAdsController
-                      .favstream,
-                  builder: (context, snapshot) => !snapshot.hasData
-                      ? const SizedBox()
-                      : Text(
-                          'Annunci per freelancer:  ${snapshot.data!.length}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
-                )
-              ],
+                child: Row(
+                  children: [
+                    const Icon(Icons.list),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    StreamBuilder<List<FreeLancePosition>>(
+                      stream: BlocProvider.of<FreelanceAdsBloc>(context)
+                          .freeLanceAdsController
+                          .favstream,
+                      builder: (context, snapshot) => !snapshot.hasData
+                          ? const SizedBox()
+                          : Text(
+                              'Annunci per freelancer:  ${snapshot.data!.length}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(fontWeight: FontWeight.bold),
+                            ),
+                    )
+                  ],
+                ),
+              ),
             ),
           ),
         ),

@@ -17,31 +17,28 @@ class MyDrawer extends StatelessWidget {
           _header(context),
           const SizedBox(height: 16),
           _menuButton(context,
-              icon: const Icon(
-                Icons.favorite,
-                color: Colors.red,
-              ),
-              text: 'Lista preferiti',
-              onTap: () => Navigator.pushNamed(context, 'favourite')),
-          const Divider(thickness: 2, indent: 8, endIndent: 8),
-          _menuButton(context,
               icon: Icon(
-                FontAwesomeIcons.envelope,
+                FontAwesomeIcons.solidBookmark,
                 color: Theme.of(context).primaryColor,
               ),
+              text: 'Annunci salvati',
+              onTap: () => Navigator.pushNamed(context, 'favourite')),
+          _divider(),
+          _menuButton(context,
+              icon: Icon(FontAwesomeIcons.envelope),
               text: 'Newsletter',
               onTap: () => _goToNewsletter(context)),
+          _divider(),
           _menuButton(context,
-              icon: Icon(
-                FontAwesomeIcons.school,
-                color: Colors.amber.shade700,
-              ),
+              icon: Icon(FontAwesomeIcons.school),
               text: 'I nostri corsi',
               onTap: () => _goToFudeoCourse(context)),
         ],
       ),
     );
   }
+
+  Widget _divider() => const Divider(thickness: 1, indent: 8, endIndent: 8);
 
   Widget _header(BuildContext context) => Container(
         margin: const EdgeInsets.only(right: 4),
@@ -116,22 +113,18 @@ class MyDrawer extends StatelessWidget {
           {required Icon icon,
           required String text,
           required Function() onTap}) =>
-      Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: Theme.of(context).focusColor),
-        child: ListTile(
-          onTap: onTap,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 30),
-          leading: icon,
-          title: Text(
-            text,
-            style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
-                ),
-          ),
+      ListTile(
+        selectedTileColor: Theme.of(context).primaryColor,
+        style: ListTileStyle.drawer,
+        onTap: onTap,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 30),
+        leading: icon,
+        title: Text(
+          text,
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
         ),
       );
 

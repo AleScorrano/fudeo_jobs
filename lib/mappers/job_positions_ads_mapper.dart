@@ -22,6 +22,7 @@ class JobPositionsAdsMapper
         adsDescription: RichTextDescription(data: dto.adsDescription),
         applyLink: dto.applyLink,
         webSiteURL: dto.webSiteURL,
+        adsUrl: dto.adsUrl,
         ral: dto.ral,
         isFavourite: favouritesBloc.isFavourite(dto.metadata.id),
       );

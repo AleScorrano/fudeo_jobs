@@ -7,12 +7,14 @@ abstract class DTO extends Equatable {
   final String applyLink;
   final List<dynamic> adsDescription;
   final DateTime postedDate;
+  final String adsUrl;
   const DTO({
     required this.metadata,
     required this.adsTitle,
     required this.applyLink,
     required this.adsDescription,
     required this.postedDate,
+    required this.adsUrl,
   });
 
   static String? getSelectObject(dynamic data) {

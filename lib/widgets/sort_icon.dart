@@ -13,10 +13,17 @@ class SortIcon extends StatelessWidget {
       valueListenable: filteredList.isSortingEmpty,
       builder: (BuildContext context, bool isSortingEmpty, Widget? child) {
         return SizedBox(
-          width: 40,
+          width: 50,
           child: Stack(
             children: [
-              const Icon(FontAwesomeIcons.arrowUpWideShort),
+              Text(
+                'Sort',
+                style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+              ), //Icon(FontAwesomeIcons.arrowUpWideShort),
               isSortingEmpty
                   ? const SizedBox()
                   : Positioned(

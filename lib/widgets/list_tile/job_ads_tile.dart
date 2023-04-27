@@ -1,3 +1,6 @@
+import 'dart:ui';
+import 'package:annunci_lavoro_flutter/widgets/dialog_and_bottomsheet/more_action_dialog.dart';
+import 'package:flutter/services.dart';
 import 'package:annunci_lavoro_flutter/cubits/dark_mode_cubit.dart';
 import 'package:annunci_lavoro_flutter/models/job_positions_model.dart';
 import 'package:annunci_lavoro_flutter/widgets/buttons/favourites_button.dart';
@@ -9,11 +12,13 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 //ignore: must_be_immutable
 class JobAdsTile extends StatefulWidget {
   bool enabled;
+  final TileMode? tileMode;
   final JobPosition? jobPosition;
   JobAdsTile({
     super.key,
     required this.jobPosition,
     required this.enabled,
+    this.tileMode,
   });
   factory JobAdsTile.shimmed() => JobAdsTile(
         jobPosition: null,
@@ -29,11 +34,13 @@ class _JobAdsTileState extends State<JobAdsTile> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: widget.tileMode == TileMode.dialogView
+            ? BorderRadius.circular(16)
+            : BorderRadius.circular(6),
         color: widget.jobPosition != null
             ? Theme.of(context).cardColor
             : Colors.transparent,
-        boxShadow: widget.jobPosition != null
+        boxShadow: widget.jobPosition != null && widget.tileMode == null
             ? [
                 BoxShadow(
                   color: Colors.black45,
@@ -46,22 +53,16 @@ class _JobAdsTileState extends State<JobAdsTile> {
       ),
       margin: const EdgeInsets.all(6),
       child: ListTile(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        shape: RoundedRectangleBorder(
+            borderRadius: widget.tileMode == TileMode.dialogView
+                ? BorderRadius.circular(16)
+                : BorderRadius.circular(6)),
         tileColor: widget.jobPosition != null
             ? Theme.of(context).cardColor
             : Colors.transparent,
         enabled: widget.enabled,
-        onTap: () => showCupertinoModalBottomSheet(
-          topRadius: const Radius.circular(40),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          context: context,
-          builder: (context) => JobAdsSheet(
-            jobPosition: widget.jobPosition!,
-          ),
-        ).then(
-          (value) => setState(() {}),
-        ),
+        onTap: _showBottomSheet,
+        onLongPress: _showActionDialog,
         contentPadding: const EdgeInsets.all(10),
         isThreeLine: true,
         iconColor: Theme.of(context).iconTheme.color,
@@ -98,7 +99,7 @@ class _JobAdsTileState extends State<JobAdsTile> {
                 ],
               )
             : shimmedSubtitle(),
-        trailing: widget.jobPosition != null
+        trailing: widget.jobPosition != null && widget.tileMode == null
             ? FavoriteButton(ads: widget.jobPosition!)
             : const SizedBox(),
       ),
@@ -195,4 +196,34 @@ class _JobAdsTileState extends State<JobAdsTile> {
         padding: EdgeInsets.symmetric(horizontal: 8.0),
         child: CircleAvatar(),
       );
+
+  void _showBottomSheet() => showCupertinoModalBottomSheet(
+        topRadius: const Radius.circular(40),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        context: context,
+        builder: (context) => JobAdsSheet(
+          jobPosition: widget.jobPosition!,
+        ),
+      );
+
+  void _showActionDialog() => {
+        HapticFeedback.heavyImpact(),
+        showDialog(
+          barrierDismissible: true,
+          anchorPoint: Offset(MediaQuery.of(context).size.width,
+              MediaQuery.of(context).size.height / 2),
+          context: context,
+          builder: (context) => BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: MoreActionDialog(
+                jobPosition: widget.jobPosition, freeLancePosition: null),
+          ),
+        )
+      };
+}
+
+enum TileMode {
+  listView,
+  dialogView,
 }
