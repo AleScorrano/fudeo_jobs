@@ -10,6 +10,8 @@ API UTILIZZATE: notion api.
 
 FUNZIONALITA'
 
+- breve carosello di benvenuto.
+- tutorial al primo avvio  dell'app
 - possibilità di fare lo switch tra light mode e dark mode.
 - salvataggio degli annunci tra i preferiti.
 - sitema di tab per visualizzare  i due tipi di annunci (per assunzione, per freelancer)
@@ -22,3 +24,4 @@ FUNZIONALITA'
 - link ai corsi fudeo.
 - condividione annunci tramite app di terze parti.
 - feedback aptico 
+

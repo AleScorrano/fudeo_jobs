@@ -1,6 +1,8 @@
+import 'package:annunci_lavoro_flutter/cubits/dark_mode_cubit.dart';
 import 'package:annunci_lavoro_flutter/widgets/dialog_and_bottomsheet/link_error_dialog.dart';
 import 'package:easy_rich_text/easy_rich_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -33,6 +35,8 @@ class MyDrawer extends StatelessWidget {
               icon: Icon(FontAwesomeIcons.school),
               text: 'I nostri corsi',
               onTap: () => _goToFudeoCourse(context)),
+          Spacer(),
+          _logo(context),
         ],
       ),
     );
@@ -83,14 +87,14 @@ class MyDrawer extends StatelessWidget {
                     EasyRichTextPattern(
                       targetString: 'assunzioni',
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: Theme.of(context).highlightColor,
+                          color: Theme.of(context).primaryColorLight,
                           fontWeight: FontWeight.bold,
                           fontSize: 18),
                     ),
                     EasyRichTextPattern(
                       targetString: 'progetti freelance',
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: Theme.of(context).highlightColor,
+                          color: Theme.of(context).primaryColorLight,
                           fontWeight: FontWeight.bold,
                           fontSize: 18),
                     ),
@@ -144,4 +148,18 @@ class MyDrawer extends StatelessWidget {
           context: context, builder: (context) => const LinkErrorDialog());
     }
   }
+
+  Widget _logo(BuildContext context) => BlocBuilder<DarkModeCubit, bool>(
+        builder: (context, themeMode) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 26.0),
+            child: Image(
+                color: themeMode ? Theme.of(context).disabledColor : null,
+                height: 40,
+                width: 140,
+                fit: BoxFit.contain,
+                image: AssetImage('assets/images/fudeo_logo.png')),
+          );
+        },
+      );
 }

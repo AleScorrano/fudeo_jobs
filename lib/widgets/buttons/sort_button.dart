@@ -7,14 +7,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:group_button/group_button.dart';
 
 //ignore: must_be_immutable
-class SortButton extends StatefulWidget {
+class SortButtons extends StatefulWidget {
+  ///
+  /// groupButto di tipo radio per selezionare il tipo di ordinamento di un criterio.
+  ///
+
   final String title;
   final IconData icon;
   final List<String> buttons;
   final Function(JobPosition) attributeGetter;
   late String attribute;
 
-  SortButton({
+  SortButtons({
     super.key,
     required this.title,
     required this.icon,
@@ -23,10 +27,10 @@ class SortButton extends StatefulWidget {
   }) : attribute = attributeGetter.toString();
 
   @override
-  SortButtonState createState() => SortButtonState();
+  SortButtonsState createState() => SortButtonsState();
 }
 
-class SortButtonState extends State<SortButton> {
+class SortButtonsState extends State<SortButtons> {
   late JobSort<JobPosition>? _currentSort;
   @override
   void initState() {

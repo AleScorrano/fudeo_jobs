@@ -2,6 +2,9 @@ import 'package:annunci_lavoro_flutter/misc/dto.dart';
 import 'package:annunci_lavoro_flutter/models/matadata.dart';
 
 class FreelancePositionsAdsDTO extends DTO {
+  ///
+  /// DTO per gli oggetti di tipo [FreeLancePosition]
+  ///
   final List<dynamic> jobRequest;
   final List<dynamic> budget;
   final String nda;

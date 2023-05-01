@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RelationshipDropDown extends StatefulWidget {
+  ///
+  /// dropdown per aggiungere i filtri di tipo [Relationship]
+  ///
   final String hintText = 'Relazione di lavoro';
   final List<String> items = ['Col commisionante', 'Con altri professionisti'];
   RelationshipDropDown({
@@ -120,6 +123,7 @@ class _SeniorityDropDownState extends State<RelationshipDropDown> {
     );
   }
 
+  /// listener che mostra il circleAvatar per segnalare all'utente che è attivo ul filtro.
   Widget _filterActiveIndicator() => ValueListenableBuilder<bool>(
         valueListenable: BlocProvider.of<FreelanceAdsBloc>(context)
             .freeLanceAdsController
@@ -135,7 +139,7 @@ class _SeniorityDropDownState extends State<RelationshipDropDown> {
               )
             : const SizedBox()),
       );
-
+// metodo che aggiunge un filtro nella lista del controller.
   void addFilter(String item) {
     final Relationship type = FreeLancePosition.mapRelationshipEnum(item);
 
@@ -147,6 +151,7 @@ class _SeniorityDropDownState extends State<RelationshipDropDown> {
     }
   }
 
+// metodo che rimuove un filtro nella lista del controller.
   void removeFilter(String item) {
     final Relationship type = FreeLancePosition.mapRelationshipEnum(item);
 

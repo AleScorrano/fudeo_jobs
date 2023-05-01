@@ -1,9 +1,8 @@
-import 'package:annunci_lavoro_flutter/blocs/favourites/bloc/favourites_bloc.dart';
 import 'package:annunci_lavoro_flutter/blocs/freelanceAds/bloc/freelance_ads_bloc.dart';
 import 'package:annunci_lavoro_flutter/blocs/jobAds/bloc/job_ads_bloc.dart';
 import 'package:annunci_lavoro_flutter/blocs/favourite_storage/bloc/favourites_storage_bloc.dart';
 import 'package:annunci_lavoro_flutter/cubits/dark_mode_cubit.dart';
-
+import 'package:annunci_lavoro_flutter/cubits/first_start_cubit.dart';
 import 'package:annunci_lavoro_flutter/mappers/freelance_positions_ads_mapper.dart';
 import 'package:annunci_lavoro_flutter/mappers/job_positions_ads_mapper.dart';
 import 'package:annunci_lavoro_flutter/repositories/ads_repository.dart';
@@ -13,6 +12,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class DependencyInjector extends StatelessWidget {
+  ///
+  /// classe che gestisce l'iniezione delle dipendenze nell'albero dei [Widget] tramite un architettura di tipo Pine
+  ///
   final Widget child;
   const DependencyInjector({super.key, required this.child});
 
@@ -26,6 +28,9 @@ class DependencyInjector extends StatelessWidget {
           ),
         ),
       );
+
+  /// [Widget] che contiene i Service e i [Provider] da iniettare nell'albero dei [Widget]
+  /// tramite un [MultiProvider].
   Widget _providers({required Widget child}) => MultiProvider(
         providers: [
           Provider<AdsService>(
@@ -37,6 +42,8 @@ class DependencyInjector extends StatelessWidget {
         child: child,
       );
 
+  /// [Widget] che contiene i Mapper da iniettare nell'albero dei [Widget]
+  /// tramite un [MultiProvider].
   Widget _mappers({required Widget child}) => MultiProvider(
         providers: [
           Provider(
@@ -51,6 +58,8 @@ class DependencyInjector extends StatelessWidget {
         child: child,
       );
 
+  /// [Widget] che contiene i Repository da iniettare nell'albero dei [Widget]
+  /// tramite un [MultiRepositoryProvider].
   Widget _repositories({required Widget child}) =>
       MultiRepositoryProvider(providers: [
         RepositoryProvider<AdsRepository>(
@@ -63,8 +72,11 @@ class DependencyInjector extends StatelessWidget {
         ),
       ], child: child);
 
+  /// [Widget] che contiene i bloc da iniettare nell'albero dei [Widget],
+  /// tramite un  [MultiBlocProvider]
   Widget _blocs({required Widget child}) => MultiBlocProvider(
         providers: [
+          BlocProvider(create: (_) => FirstStartCubit()),
           BlocProvider<JobAdsBloc>(
             lazy: false,
             create: (context) => JobAdsBloc(

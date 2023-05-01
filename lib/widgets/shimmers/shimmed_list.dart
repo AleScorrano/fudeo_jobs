@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ShimmedList extends StatelessWidget {
+  ///
+  /// effetto che mostra la lista Shimmed in fase di caricamento.
+  ///
   final Widget child;
   const ShimmedList({super.key, required this.child});
 
@@ -19,7 +22,6 @@ class ShimmedList extends StatelessWidget {
               child: Row(
                 children: [
                   const Icon(Icons.list, size: 30),
-                  shimmedContainer(context, 250, 6),
                   const Divider(),
                 ],
               ),

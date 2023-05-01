@@ -3,6 +3,9 @@ import 'package:annunci_lavoro_flutter/services/network/dto/job_positions_dto.da
 import 'package:equatable/equatable.dart';
 
 class JobsPositionsResponse extends Equatable {
+  ///
+  /// classe che gestisce la risposta del database degli annunci di tipo [JobPosition]
+  ///
   final Map<String, String>? errors;
   final List<JobsPositionsAdsDTO> results;
   final Pagination pagination;

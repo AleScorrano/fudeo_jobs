@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SeniorityDropDown extends StatefulWidget {
+  ///
+  /// dropdown per aggiungere i filtri di tipo [Seniority]
+  ///
   final String hintText = 'Seniority';
   final List<String> items = ['Junior', 'Mid', 'Senior'];
   SeniorityDropDown({
@@ -121,6 +124,7 @@ class _SeniorityDropDownState extends State<SeniorityDropDown> {
     );
   }
 
+  /// listener che mostra il circleAvatar per segnalare all'utente che è attivo ul filtro.
   Widget _filterActiveIndicator() => ValueListenableBuilder<bool>(
         valueListenable: BlocProvider.of<JobAdsBloc>(context)
             .jobAdsController
@@ -136,7 +140,7 @@ class _SeniorityDropDownState extends State<SeniorityDropDown> {
               )
             : const SizedBox()),
       );
-
+// metodo che aggiunge un filtro nella lista del controller.
   void addFilter(String item) {
     final Seniority? type = JobPosition.mapSeniorityEnum(item);
 
@@ -148,6 +152,7 @@ class _SeniorityDropDownState extends State<SeniorityDropDown> {
     }
   }
 
+// metodo che rimuove un filtro nella lista del controller.
   void removeFilter(String item) {
     final Seniority? type = JobPosition.mapSeniorityEnum(item);
 

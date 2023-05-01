@@ -1,10 +1,10 @@
 import 'package:annunci_lavoro_flutter/blocs/freelanceAds/bloc/freelance_ads_bloc.dart';
 import 'package:annunci_lavoro_flutter/models/freelance_positions_model.dart';
 import 'package:annunci_lavoro_flutter/utils/sliver_appbar_delagate.dart';
-import 'package:annunci_lavoro_flutter/widgets/list_tile/freelance_ads_tile.dart';
+import 'package:annunci_lavoro_flutter/widgets/cards/freelance_ads_card.dart';
 import 'package:annunci_lavoro_flutter/widgets/drop_down/nda_dropd_down.dart';
 import 'package:annunci_lavoro_flutter/widgets/drop_down/relationship_drop_down.dart';
-import 'package:annunci_lavoro_flutter/widgets/list_tile/job_ads_tile.dart';
+import 'package:annunci_lavoro_flutter/widgets/cards/job_ads_card.dart';
 import 'package:annunci_lavoro_flutter/widgets/shimmers/shimmed_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +13,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class FreeLanceAdsPage extends StatefulWidget {
+  ///
+  /// pagina che mostra gli annunci di tipo [FreeLancePosition].
+  ///
+  /// inizializza due [ScrollController]:
+  /// [_adsListController] per gestire lo scroll della lista degli annunci.
+  /// [_actionBarController]  per gestire lo scroll dell'actionsBar
+  ///
+  /// inizializza un [TextEditingController] [_searchFieldController] per il [TextField] di ricerca, da [FreelanceAdsBloc]
+  ///
   const FreeLanceAdsPage({
     super.key,
   });
@@ -26,8 +35,14 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
   final ScrollController _actionBarController = ScrollController();
   late TextEditingController _searchFieldController;
   final FocusNode _searchFiledFocusNode = FocusNode();
+
+  /// per mostrare l'header quando si scrlla verso l'alto.
   bool _showHeader = true;
+
+  /// per mostrare o meno [_searchFieldController]
   bool _showTextFiled = false;
+
+  /// per disbilitare il tap su  [_adsList] mentre si sta scrivendo nel [TextField] di ricerca.
   bool _enableListTap = true;
 
   @override
@@ -37,6 +52,10 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
         .freeLanceAdsController
         .searchController;
 
+    /// aggiungo un listener ad [_adsListController] per mostrare o nascondere l'header
+    /// a seconda della direzione dello scroll.
+    ///
+    /// chiamo il metodo  che scarica altri annunci quando lo scroll della lista è alla fine.
     _adsListController.addListener(
       () {
         if (_adsListController.position.userScrollDirection ==
@@ -67,7 +86,7 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
           current is FetchedFreelanceAdsState,
       builder: (context, state) {
         if (state is InitfreelanceAdsState) {
-          return ShimmedList(child: JobAdsTile.shimmed());
+          return ShimmedList(child: JobAdsCard.shimmed());
         } else if (state is ErrorFreelanceAdsState) {
           return _errorWidget();
         } else if (state is FetchedFreelanceAdsState ||
@@ -106,6 +125,7 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
     );
   }
 
+  /// [Widget] che mostra l'actionbar con i Dropdown per i filtri il [TextField] e il bottone per mostrarlo.
   Widget _actionsBar() => Expanded(
         child: ListView(
           physics: const NeverScrollableScrollPhysics(),
@@ -119,6 +139,7 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
         ),
       );
 
+  /// [Widget] che contiene i Dropdown per i filtri.
   Widget _dropDownFilters() => Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: Row(
@@ -130,6 +151,7 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
         ),
       );
 
+  /// bottone per mostrare il [_searchField] o nasconderlo.
   Widget _toggleSearchButton() => IconButton(
         onPressed: () => _showTextFiled ? _remTextField() : _showField(),
         icon: _showTextFiled
@@ -139,6 +161,7 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
             : const Icon(FontAwesomeIcons.search),
       );
 
+  /// [TextField] per la ricerca.
   Widget _searchField() => Container(
         width: MediaQuery.of(context).size.width - 66,
         margin: const EdgeInsets.only(top: 12, bottom: 12, right: 20),
@@ -181,6 +204,7 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
         ),
       );
 
+  /// Header che mostra il numero di annunci disponibili.
   Widget _header() => Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,6 +242,7 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
         ],
       );
 
+  /// [Widget] che mostra gli annunci disponibili passati dal flusso dello Stream.
   Widget _adsList() => BlocConsumer<FreelanceAdsBloc, FreelanceAdsState>(
         listener: (context, state) {
           if (state is NoMoreFreelanceAdsState) {
@@ -241,11 +266,10 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
                                   ? _noMoreAdsWidget()
                                   : const SizedBox();
                         }
-                        return FreelanceAdsTile(
+                        return FreelanceAdsCard(
                             enabled: _enableListTap,
                             freeLancePosition: snapshot.data![index]);
                       },
-                      //separatorBuilder: (context, index) => _listDivider(),
                     )
                   : _noAdsWidget();
             },
@@ -253,13 +277,7 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
         },
       );
 
-  Widget _listDivider() => Divider(
-        color: Theme.of(context).dividerColor,
-        indent: 8,
-        endIndent: 8,
-        thickness: 2,
-      );
-
+  /// [Widget] che indica che non sono presenti annunci.
   Widget _noAdsWidget() => SliverFillRemaining(
         child: Expanded(
           child: Column(
@@ -299,6 +317,7 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
         ],
       );
 
+  /// [Widget] che indica all'utente che sono stati scaricati tutti gli annunci.
   Widget _noMoreAdsWidget() => Padding(
         padding: const EdgeInsets.only(top: 10.0, bottom: 40),
         child: Column(
@@ -318,15 +337,7 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
         ),
       );
 
-  Widget adsCard() => Container(
-        height: 80,
-        width: double.maxFinite,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black38, width: 0),
-          borderRadius: BorderRadius.circular(12),
-        ),
-      );
-
+  /// [Widget] che mostra un indicatore di caricamento alla fine della lista mentre si stanno scaricando altri annunci.
   Widget _loadingAdsWidget() => Padding(
         padding: const EdgeInsets.all(30),
         child: Center(
@@ -346,6 +357,7 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
         ),
       );
 
+  /// [SnackBar] che viene mostrata per avvisare l'utente che sono stati scaricati tutti gli annunci.
   SnackBar _snackBar() => SnackBar(
         behavior: SnackBarBehavior.floating,
         margin: const EdgeInsets.all(10),
@@ -371,6 +383,7 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
         ),
       );
 
+  /// [Widget] che indica uno stato di errore.
   Widget _errorWidget() => const Center(
           child: Column(
         children: [
@@ -379,6 +392,7 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
         ],
       ));
 
+  /// metodo per mostrare [_searchField]
   void _showField() {
     setState(() {
       _showTextFiled = true;
@@ -389,6 +403,7 @@ class _FreeLanceAdsPageState extends State<FreeLanceAdsPage> {
         duration: const Duration(milliseconds: 500), curve: Curves.decelerate);
   }
 
+  /// metodo per nascondere [_searchField]
   void _remTextField() {
     setState(() {
       _showTextFiled = false;

@@ -10,6 +10,13 @@ part 'job_ads_event.dart';
 part 'job_ads_state.dart';
 
 class JobAdsBloc extends Bloc<JobAdsEvent, JobAdsState> {
+  ///
+  /// [Bloc] che gestisce gli annunci di tipo [JobPosition].
+  ///
+  /// ha come dipendenze [adsRepository] per accedere al layer Repository e scaricare i dati dalle API.
+  ///
+  /// ed inizializza [freeLanceAdsController] come controller per gesrire la lista di  annunci [FreeLancePosition].
+  ///
   final AdsRepository adsRepository;
   final JobAdsController jobAdsController = JobAdsController([]);
 
@@ -18,11 +25,12 @@ class JobAdsBloc extends Bloc<JobAdsEvent, JobAdsState> {
     on<FetchMoreJobAdsEvent>(_moreAds);
   }
 
+  /// metodo che scarica i primi dati dalle API  ed inizializza il controller [JobAdsController] con i primi dati.
   FutureOr<void> _fetchInitialData(
       FetchInitialJobAdsEvent event, Emitter<JobAdsState> emit) async {
     emit(InitJobAdsState());
     try {
-      final jobAds = await adsRepository.jobPositions();
+      final jobAds = await adsRepository.getjobPositions();
       addItems(jobAds);
       emit(FetchedJobAdsState());
     } on RepositoryError catch (error) {
@@ -32,6 +40,7 @@ class JobAdsBloc extends Bloc<JobAdsEvent, JobAdsState> {
     }
   }
 
+  /// metodo che scarica altri annnci di tipo [JobPosition] e gli aggiunge al flusso dati  di [jobAdsController]
   FutureOr<void> _moreAds(
       FetchMoreJobAdsEvent event, Emitter<JobAdsState> emit) async {
     try {
@@ -40,7 +49,7 @@ class JobAdsBloc extends Bloc<JobAdsEvent, JobAdsState> {
         return;
       }
       emit(FetchingMoreJobAdsState());
-      final jobAds = await adsRepository.jobPositions();
+      final jobAds = await adsRepository.getjobPositions();
       addItems(jobAds);
       emit(InitJobAdsState());
     } on RepositoryError catch (error) {
@@ -50,10 +59,14 @@ class JobAdsBloc extends Bloc<JobAdsEvent, JobAdsState> {
     }
   }
 
+  /// metodo per aggiungere oggetti [JobPosition] al controller [jobAdsController]
   void addItems(List<JobPosition> items) {
     jobAdsController.addItems(items);
   }
 
+  /// metodo che aggiunge l'evento [FetchInitialJobAdsEvent] al [Bloc].
   void fetchAds() => add(FetchInitialJobAdsEvent());
+
+  /// metodo che aggiunge l'evento [FetchMoreJobAdsEvent] al [Bloc].
   void moreAds() => add(FetchMoreJobAdsEvent());
 }

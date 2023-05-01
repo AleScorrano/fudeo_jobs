@@ -4,7 +4,7 @@ import 'package:annunci_lavoro_flutter/cubits/dark_mode_cubit.dart';
 import 'package:annunci_lavoro_flutter/models/freelance_positions_model.dart';
 import 'package:annunci_lavoro_flutter/widgets/buttons/favourites_button.dart';
 import 'package:annunci_lavoro_flutter/widgets/dialog_and_bottomsheet/freelance_ads_sheet.dart';
-import 'package:annunci_lavoro_flutter/widgets/list_tile/job_ads_tile.dart';
+import 'package:annunci_lavoro_flutter/widgets/cards/job_ads_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,25 +13,28 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../dialog_and_bottomsheet/more_action_dialog.dart';
 
 //ignore: must_be_immutable
-class FreelanceAdsTile extends StatefulWidget {
+class FreelanceAdsCard extends StatefulWidget {
+  ///
+  /// Card che mostra le info principali di un oggetto di tipo [FreeLancePosition]
+  ///
   bool enabled;
   final TileMode? tileMode;
   final FreeLancePosition? freeLancePosition;
-  FreelanceAdsTile({
+  FreelanceAdsCard({
     required this.enabled,
     required this.freeLancePosition,
     this.tileMode,
     super.key,
   });
 
-  factory FreelanceAdsTile.shimmed() =>
-      FreelanceAdsTile(enabled: true, freeLancePosition: null);
+  factory FreelanceAdsCard.shimmed() =>
+      FreelanceAdsCard(enabled: true, freeLancePosition: null);
 
   @override
-  State<FreelanceAdsTile> createState() => _FreelanceAdsTileState();
+  State<FreelanceAdsCard> createState() => _FreelanceAdsCardState();
 }
 
-class _FreelanceAdsTileState extends State<FreelanceAdsTile> {
+class _FreelanceAdsCardState extends State<FreelanceAdsCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -156,6 +159,7 @@ class _FreelanceAdsTileState extends State<FreelanceAdsTile> {
         },
       );
 
+  /// metodo che apre la bottomSheet con tutte le info dell'annuncio
   void _showBottomSheet() => showCupertinoModalBottomSheet(
         topRadius: const Radius.circular(40),
         backgroundColor: Colors.transparent,
@@ -166,6 +170,7 @@ class _FreelanceAdsTileState extends State<FreelanceAdsTile> {
         ),
       );
 
+  /// metodo che apre la dialog delle azioni rapide con effetto blur sullo sfondo.
   void _showActionDialog() => {
         HapticFeedback.heavyImpact(),
         showDialog(

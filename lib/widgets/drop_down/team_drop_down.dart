@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TeamDropDown extends StatefulWidget {
+  ///
+  /// dropdown per aggiungere i filtri di tipo [Team]
+  ///
   final String hintText = 'Team';
   final List<String> items = ['In sede', 'Ibrido', 'Remoto'];
   TeamDropDown({
@@ -120,6 +123,7 @@ class _TeamDropDownState extends State<TeamDropDown> {
     );
   }
 
+  /// listener che mostra il circleAvatar per segnalare all'utente che è attivo ul filtro.
   Widget _filterActiveIndicator() => ValueListenableBuilder<bool>(
         valueListenable: BlocProvider.of<JobAdsBloc>(context)
             .jobAdsController
@@ -135,7 +139,7 @@ class _TeamDropDownState extends State<TeamDropDown> {
               )
             : const SizedBox()),
       );
-
+// metodo che aggiunge un filtro nella lista del controller.
   void addFilter(String item) {
     final Team? type = JobPosition.mapTeamEnum(item);
 
@@ -145,6 +149,7 @@ class _TeamDropDownState extends State<TeamDropDown> {
     }
   }
 
+// metodo che aggiunge un filtro nella lista del controller.
   void removeFilter(String item) {
     final Team? type = JobPosition.mapTeamEnum(item);
 

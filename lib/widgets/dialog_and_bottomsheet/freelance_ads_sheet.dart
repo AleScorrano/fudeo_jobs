@@ -17,6 +17,11 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../blocs/favourite_storage/bloc/favourites_storage_bloc.dart';
 
 class FreelanceAdsSheet extends StatefulWidget {
+  ///
+  /// bottomSheet che mostra i dettagli di un annuncio di tipo [FreeLancePosition]
+  ///
+  /// consente anche di salvare l'annuncio candidarsi, e condividerlo con app di terze parti.
+  ///
   final FreeLancePosition freeLancePosition;
   const FreelanceAdsSheet({
     super.key,
@@ -178,6 +183,7 @@ class _FreelanceAdsSheetState extends State<FreelanceAdsSheet> {
             .titleLarge!
             .copyWith(fontWeight: FontWeight.bold, fontSize: 32),
       );
+
   Widget _jobPosted() => Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: Row(
@@ -216,6 +222,7 @@ class _FreelanceAdsSheetState extends State<FreelanceAdsSheet> {
         ],
       );
 
+  /// bottone che indirizza direttamente al link della candidatura.
   Widget _applyButton() => Expanded(
         child: InkWell(
           onTap: _apply,
@@ -249,6 +256,7 @@ class _FreelanceAdsSheetState extends State<FreelanceAdsSheet> {
         ),
       );
 
+  /// bottone che aggiunge o rimuove l'annuncio dai preferiti.
   Widget _favouriteButton() => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Expanded(
@@ -293,6 +301,7 @@ class _FreelanceAdsSheetState extends State<FreelanceAdsSheet> {
         ),
       );
 
+  /// widget che visualizza un oggetto di tipo [RichTextDescription]
   Widget _richTextDescription(String label, RichTextDescription content) =>
       Padding(
         padding: const EdgeInsets.only(bottom: 26.0),
@@ -345,6 +354,7 @@ class _FreelanceAdsSheetState extends State<FreelanceAdsSheet> {
         ),
       );
 
+  /// bottone che permette all'utente di condividere l'annuncio tramite app di terze parti.
   Widget _shareButton() => Positioned(
         top: 6,
         right: 20,
@@ -358,6 +368,7 @@ class _FreelanceAdsSheetState extends State<FreelanceAdsSheet> {
         ),
       );
 
+  /// metodo che aggiunge l'annuncio ai preferiti.
   void _addToFavourite() {
     widget.freeLancePosition.isFavourite = true;
     setState(() {});
@@ -371,6 +382,7 @@ class _FreelanceAdsSheetState extends State<FreelanceAdsSheet> {
     HapticFeedback.heavyImpact();
   }
 
+  /// metodo che rimuove l'annuncio dai preferiti.
   void _removeFromFavourite() {
     widget.freeLancePosition.isFavourite = false;
     setState(() {});
@@ -384,6 +396,7 @@ class _FreelanceAdsSheetState extends State<FreelanceAdsSheet> {
     HapticFeedback.heavyImpact();
   }
 
+  /// metodo che apre la webview al link della candidatura.
   Future<void> _apply() async {
     final Uri _url = Uri.parse(widget.freeLancePosition.applyLink);
     if (!await launchUrl(_url)) {

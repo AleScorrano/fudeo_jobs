@@ -3,6 +3,9 @@ import 'package:annunci_lavoro_flutter/services/network/dto/freelance_positions_
 import 'package:equatable/equatable.dart';
 
 class FreelancePositionsresponse extends Equatable {
+  ///
+  /// classe che gestisce la risposta del database degli annunci di tipo [FreeLancePosition]
+  ///
   final Map<String, String>? errors;
   final Pagination pagination;
   final List<FreelancePositionsAdsDTO> results;

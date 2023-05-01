@@ -10,26 +10,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 //ignore: must_be_immutable
-class JobAdsTile extends StatefulWidget {
+class JobAdsCard extends StatefulWidget {
+  ///
+  /// Card che mostra le info principali di un oggetto di tipo [JobPosition]
+  ///
   bool enabled;
   final TileMode? tileMode;
   final JobPosition? jobPosition;
-  JobAdsTile({
+  JobAdsCard({
     super.key,
     required this.jobPosition,
     required this.enabled,
     this.tileMode,
   });
-  factory JobAdsTile.shimmed() => JobAdsTile(
+  factory JobAdsCard.shimmed() => JobAdsCard(
         jobPosition: null,
         enabled: true,
       );
 
   @override
-  State<JobAdsTile> createState() => _JobAdsTileState();
+  State<JobAdsCard> createState() => _JobAdsCardState();
 }
 
-class _JobAdsTileState extends State<JobAdsTile> {
+class _JobAdsCardState extends State<JobAdsCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -197,6 +200,7 @@ class _JobAdsTileState extends State<JobAdsTile> {
         child: CircleAvatar(),
       );
 
+  /// metodo che apre la bottomSheet con tutte le info dell'annuncio
   void _showBottomSheet() => showCupertinoModalBottomSheet(
         topRadius: const Radius.circular(40),
         backgroundColor: Colors.transparent,
@@ -207,12 +211,11 @@ class _JobAdsTileState extends State<JobAdsTile> {
         ),
       );
 
+  /// metodo che apre la dialog delle azioni rapide con effetto blur sullo sfondo.
   void _showActionDialog() => {
         HapticFeedback.heavyImpact(),
         showDialog(
           barrierDismissible: true,
-          anchorPoint: Offset(MediaQuery.of(context).size.width,
-              MediaQuery.of(context).size.height / 2),
           context: context,
           builder: (context) => BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
@@ -223,6 +226,8 @@ class _JobAdsTileState extends State<JobAdsTile> {
       };
 }
 
+/// enum utilizzato per impostare se la card viene mostrata nella lista oppure
+/// nella dialog delle azioni rapide
 enum TileMode {
   listView,
   dialogView,

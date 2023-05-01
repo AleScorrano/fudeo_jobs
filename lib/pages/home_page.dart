@@ -1,11 +1,18 @@
 import 'package:annunci_lavoro_flutter/cubits/dark_mode_cubit.dart';
+import 'package:annunci_lavoro_flutter/cubits/first_start_cubit.dart';
 import 'package:annunci_lavoro_flutter/widgets/drawer.dart';
 import 'package:annunci_lavoro_flutter/widgets/tab_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_offline/flutter_offline.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 class HomePage extends StatefulWidget {
+  ///
+  /// Pagina principale dell'app che contiene la [TabView] con le pagine degli annunci.
+  ///
+
+  static String routeName = 'Home_page';
   const HomePage({super.key});
 
   @override
@@ -32,24 +39,39 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DarkModeCubit, bool>(
-      builder: (context, state) {
+      builder: (context, themeState) {
         return Scaffold(
           drawer: const MyDrawer(),
-          appBar: _appBar(state),
+          appBar: _appBar(themeState),
           body: OfflineBuilder(
             connectivityBuilder: (context, connectivity, child) =>
                 connectivity == ConnectivityResult.none
                     ? _offlineBody(context)
                     : child,
-            child: _connectedBody(),
+            child: _showCaseWidget(),
           ),
         );
       },
     );
   }
 
+  /// [Widget] che fa partire il tutorial iniziale solo al primo avvio dell'app,ed alla fine del tutorial
+  /// seganala a [FirstStartCubit] che il tutorial è stato completato,per far si che al prossimo avvio
+  /// non venga mostarto nuovamente.
+  Widget _showCaseWidget() => ShowCaseWidget(
+        onFinish: () {
+          BlocProvider.of<FirstStartCubit>(context).notifyFirstStart();
+          setState(() {});
+        },
+        builder: Builder(
+          builder: (context) => _connectedBody(),
+        ),
+      );
+
+  ///[Widget] che riotrna la [TabView] quando lo stato di connessione è connesso.
   Widget _connectedBody() => TabView(tabController: _tabController);
 
+  /// [Widget] che mostra lo stato di connessione offline.
   Widget _offlineBody(BuildContext context) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

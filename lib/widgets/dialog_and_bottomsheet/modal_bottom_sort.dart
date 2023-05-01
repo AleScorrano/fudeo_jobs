@@ -6,6 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SortingModalBottomSheet extends StatefulWidget {
+  ///
+  /// bottomdSheet che contiene i [SortButtons] per i criteri di ordinamento.
+  ///
   const SortingModalBottomSheet({super.key});
 
   @override
@@ -40,13 +43,13 @@ class _SortingModalBottomSheetState extends State<SortingModalBottomSheet> {
                   ],
                 ),
                 const Divider(color: Colors.grey, thickness: 2),
-                SortButton(
+                SortButtons(
                     title: 'JobPosted',
                     icon: FontAwesomeIcons.clock,
                     buttons: const ['+ recente', '- Recente'],
                     attributeGetter: (JobPosition jobPosition) =>
                         jobPosition.postedDate),
-                SortButton(
+                SortButtons(
                     title: 'Retribuzione',
                     icon: FontAwesomeIcons.clock,
                     buttons: const ['Crescente', 'Decrescente'],
@@ -60,6 +63,7 @@ class _SortingModalBottomSheetState extends State<SortingModalBottomSheet> {
     );
   }
 
+  /// metodo che resetta i cirteri di ricerca svuotando la lista sort del controller.
   Widget _resetButton() => TextButton(
         onPressed: () {
           BlocProvider.of<JobAdsBloc>(context).jobAdsController.resetSort();

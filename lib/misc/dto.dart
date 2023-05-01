@@ -2,6 +2,9 @@ import 'package:annunci_lavoro_flutter/models/matadata.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class DTO extends Equatable {
+  ///
+  /// classe astratta per gesrtire i DTO
+  ///
   final AdsMetaData metadata;
   final String adsTitle;
   final String applyLink;
@@ -17,6 +20,7 @@ abstract class DTO extends Equatable {
     required this.adsUrl,
   });
 
+  /// riotrna una [String] dagli oggetti select di Notion
   static String? getSelectObject(dynamic data) {
     if (data == null) {
       return null;
@@ -25,6 +29,7 @@ abstract class DTO extends Equatable {
     }
   }
 
+  /// riotorna il testo dall'oggetto Richtext di notion.
   static String? getSingleText(Map<String, dynamic> data) {
     String? dataReturn;
     if (data.containsKey('rich_text')) {

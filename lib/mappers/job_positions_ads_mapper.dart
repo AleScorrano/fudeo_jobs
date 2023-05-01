@@ -5,6 +5,9 @@ import 'package:annunci_lavoro_flutter/services/network/dto/job_positions_dto.da
 
 class JobPositionsAdsMapper
     extends DTOMapper<JobsPositionsAdsDTO, JobPosition> {
+  ///
+  /// classe concreta del mapper [DTOMapper] che ritorna un oggetto di tipo [JobPosition]
+  ///
   JobPositionsAdsMapper({required super.favouritesBloc});
 
   @override

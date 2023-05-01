@@ -9,6 +9,15 @@ import 'package:annunci_lavoro_flutter/models/job_positions_model.dart';
 import 'package:annunci_lavoro_flutter/services/network/jobAdsService.dart';
 
 class AdsRepository {
+  ///
+  /// repository per gli annunci.
+  ///
+  /// scarica i dati dalle API  e gli ritorna come oggeti finiti al BLoc che li gestisce.
+  ///
+  /// conserva i cursori [jobAdsNextCursor] [freeLanceAdsNextCursor] per la paginzaione che vengono gestiti dai metodi dei Bloc.
+  ///
+  /// utilizza delle variabili [bool] per segnalare se ci sono ancora aanunci da scaricare [hasMoreJobAds] [hasMoreFreelanceAds]
+  ///
   final JobPositionsAdsMapper jobPositionsAdsMapper;
   final FreeLancePositionsAdsMapper freeLancePositionsAdsMapper;
   final AdsService jobAdsService;
@@ -24,7 +33,8 @@ class AdsRepository {
     required this.favouritesStorageBloc,
   });
 
-  Future<List<JobPosition>> jobPositions() async {
+  /// metodo che ritorna gli annunci di tipo [JobPosition]
+  Future<List<JobPosition>> getjobPositions() async {
     try {
       final response = await jobAdsService.getJobPositionsAds(jobAdsNextCursor);
       jobAdsNextCursor = response.pagination.nextCursor;
@@ -39,6 +49,7 @@ class AdsRepository {
     }
   }
 
+  /// metodo che ritorna gli annunci di tipo [JobPosition]
   Future<List<FreeLancePosition>> freeLancePositions() async {
     try {
       final response =
@@ -54,21 +65,23 @@ class AdsRepository {
     }
   }
 
+  /// metodo che ritorna gli annunci preferiti di tipo [JobPosition]
+
   Future<List<JobPosition>> favouritesJobPositionsAds(
       List<JobPosition> currentList) async {
     try {
       List<JobPosition> favList = [];
       List<FavouriteStoreModel> favourites =
           favouritesStorageBloc.getFavourites();
-//* inizializzo la lista da ritornare con gli annunci già presenti in memoria
+//* inizializza la lista da ritornare con gli annunci già presenti in memoria
 
       favList.addAll(currentList.where((element) => element.isFavourite));
 
-//* rimuovo dalla lista dei favoriti da scaricare gli annunci che ho gia presenti in memoria
+//* rimuove dalla lista dei favoriti da scaricare gli annunci che ho gia presenti in memoria
       favourites.removeWhere(
           (element) => favList.any((fav) => fav.metaData.id == element.id));
 
-//* scarico eventuali annunci che non sono già stati scaricati.
+      //* scarico eventuali annunci che non sono già stati scaricati.
       await Future.wait(
         favourites.map(
           (favAds) async {
@@ -90,6 +103,7 @@ class AdsRepository {
     }
   }
 
+  /// metodo che ritorna gli annunci preferiti di tipo [FreeLancePosition]
   Future<List<FreeLancePosition>> favouritesFreelanceAds(
       List<FreeLancePosition> currentList) async {
     try {

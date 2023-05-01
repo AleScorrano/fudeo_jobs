@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 
 //ignore: must_be_immutable
 class FreeLancePosition extends AdsModel {
+  ///
+  /// modello dell'oggeto [FreeLancePosition].
+  ///
   final RichTextDescription jobRequest;
   final RichTextDescription budget;
   final NDA nda;
@@ -37,6 +40,7 @@ class FreeLancePosition extends AdsModel {
         realtionship,
       ];
 
+  /// metodo che ritorna una stringa a seconda del vaore dell'enum [Relationship]
   String mapRelationshipString() {
     if (realtionship == Relationship.onlyCommissioner) {
       return 'Solo con chi commissiona il lavoro';
@@ -45,6 +49,7 @@ class FreeLancePosition extends AdsModel {
     }
   }
 
+  /// metodo che inizializza l'enum [NDA] a seconda della stringa passata
   static NDA mapNdaEnum(String nda) {
     if (nda == 'Si') {
       return NDA.yes;
@@ -53,6 +58,7 @@ class FreeLancePosition extends AdsModel {
     }
   }
 
+  /// metodo che inizializza l'enum [Relationship] a seconda della stringa passata
   static Relationship mapRelationshipEnum(String relationship) {
     if (relationship == 'Solo con chi commissiona il lavoro') {
       return Relationship.onlyCommissioner;
@@ -61,6 +67,7 @@ class FreeLancePosition extends AdsModel {
     }
   }
 
+  /// metodo che ritorna un [Color] a seconda del tipo di [Relationship]
   Color getRelationshipColor(Relationship relationship, bool mode) {
     if (relationship == Relationship.onlyCommissioner) {
       return mode ? Colors.red.shade700 : Colors.red.shade100;

@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ContractContainer extends StatelessWidget {
+  ///
+  /// Container che mostra le info di tipo [ContractType]
+  /// e cambia colore in base al tema.
+  ///
   final JobPosition jobPosition;
   const ContractContainer({
     super.key,

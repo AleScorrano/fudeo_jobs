@@ -13,6 +13,13 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class FavoriteButton extends StatefulWidget {
+  ///
+  /// Bottone usato per aggiungere o rimuovere un annuncio dai favoriti
+  ///
+  /// utilizza un animazione per ingrandire l'icona quando viene premuto
+  ///
+  /// mostra una snackBar di avviso, ed emette un feedback aptico.
+  ///
   final AdsModel ads;
 
   const FavoriteButton({
@@ -99,6 +106,7 @@ class FavoriteButtonState extends State<FavoriteButton>
     );
   }
 
+  /// metodo che aggiunge l'annuncio a preferiti ed emette il feedback aptico.
   void _addToFavourite() {
     setState(() {});
 
@@ -119,6 +127,7 @@ class FavoriteButtonState extends State<FavoriteButton>
     _showSnackBar('Annuncio aggiunto ai preferiti');
   }
 
+  /// metodo che rimuove l'annuncio dai preferiti ed emette il feedback aptico.
   void _removeFromFavourite() {
     setState(() {});
     if (widget.ads.runtimeType == JobPosition) {
@@ -139,6 +148,7 @@ class FavoriteButtonState extends State<FavoriteButton>
     HapticFeedback.heavyImpact();
   }
 
+  /// metodo che mostra la snackBar con l'avviso di aggiunta o rimozione dai preferiti.
   void _showSnackBar(String text) => showTopSnackBar(
         Overlay.of(context),
         CustomSnackBar.success(

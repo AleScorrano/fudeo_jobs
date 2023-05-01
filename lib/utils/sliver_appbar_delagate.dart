@@ -4,6 +4,14 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
 class SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  ///
+  /// delagate utilizzato per mostrare la barra degli strumenti nelle tab.
+  ///
+  /// diventa visibile ogni volta che si inizia a scrollare verso l'alto.
+  ///
+  /// ha un effetto blur per mostrare in semitrasparenza la grafica sottostante.
+  ///
+
   final double minHeight;
   final double maxHeight;
   final Widget child;

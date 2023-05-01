@@ -1,9 +1,11 @@
 import 'package:annunci_lavoro_flutter/blocs/jobAds/bloc/job_ads_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SortIcon extends StatelessWidget {
+  ///
+  /// icona con un listener che mostra un [CircleAvatar] colorato se sono attivi criteri di ordinamento.
+  ///
   const SortIcon({super.key});
 
   @override
@@ -23,7 +25,7 @@ class SortIcon extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
-              ), //Icon(FontAwesomeIcons.arrowUpWideShort),
+              ),
               isSortingEmpty
                   ? const SizedBox()
                   : Positioned(

@@ -1,4 +1,3 @@
-import 'package:annunci_lavoro_flutter/blocs/favourite_storage/bloc/favourites_storage_bloc.dart';
 import 'package:annunci_lavoro_flutter/models/favourites_store_model.dart';
 import 'package:equatable/equatable.dart';
 

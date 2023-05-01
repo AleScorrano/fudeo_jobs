@@ -37,6 +37,7 @@ class _TabViewState extends State<TabView> {
     );
   }
 
+  /// resetta eventuali filtri applicati al cambio del tab.
   void _handleTabChange(int index) {
     if (index == 1) {
       BlocProvider.of<JobAdsBloc>(context).jobAdsController.resetFilter();

@@ -4,6 +4,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 //ignore: must_be_immutable
 class JobPosition extends AdsModel {
+  ///
+  /// modello dell'oggeto [JobPosition].
+  ///
   final String company;
   final Team? jobLocation;
   final ContractType? contractType;
@@ -49,8 +52,10 @@ class JobPosition extends AdsModel {
         webSiteURL,
       ];
 
+  /// ritorna solo il titolo dell'annuncio.
   String get onlyTitle => adsTitle.split('|')[0].trim();
 
+  /// ritorna una stringa  a seconda del valore di [Seniority]
   String? mapSeniorityString() {
     switch (seniority) {
       case Seniority.junior:
@@ -64,6 +69,7 @@ class JobPosition extends AdsModel {
     }
   }
 
+  /// ritorna una stringa  a seconda del valore di [Team]
   String? mapTeamString() {
     switch (jobLocation) {
       case Team.onSite:
@@ -77,6 +83,7 @@ class JobPosition extends AdsModel {
     }
   }
 
+  /// ritorna una stringa  a seconda del valore di [ContractType]
   String? mapContractTypeString() {
     if (contractType == ContractType.partTime) {
       return 'Part time';
@@ -86,6 +93,7 @@ class JobPosition extends AdsModel {
     return null;
   }
 
+  /// ritorna il valore di [Seniority] a seconda della stringa passata
   static Seniority? mapSeniorityEnum(String seniority) {
     if (seniority == 'Junior') {
       return Seniority.junior;
@@ -97,6 +105,7 @@ class JobPosition extends AdsModel {
     return null;
   }
 
+  /// ritorna il valore di [ContractType] a seconda della stringa passata
   static ContractType? mapContractEnum(String contract) {
     if (contract == 'Part time') {
       return ContractType.partTime;
@@ -106,6 +115,7 @@ class JobPosition extends AdsModel {
     return null;
   }
 
+  /// ritorna il valore di [Team] a seconda della stringa passata
   static Team? mapTeamEnum(String team) {
     if (team == 'In sede') {
       return Team.onSite;
@@ -117,6 +127,7 @@ class JobPosition extends AdsModel {
     return null;
   }
 
+  /// ritorna un [IconData] a seconda del valore di [Team]
   IconData _iconFromTeam() {
     if (jobLocation == Team.onSite) {
       return FontAwesomeIcons.building;
@@ -128,6 +139,7 @@ class JobPosition extends AdsModel {
     return FontAwesomeIcons.building;
   }
 
+  /// ritorna un [Color] a seconda del valore di [Seniority]
   Color getSeniorityColor(Seniority seniority, bool mode) {
     switch (seniority) {
       case Seniority.junior:
@@ -139,6 +151,7 @@ class JobPosition extends AdsModel {
     }
   }
 
+  /// ritorna un [Color] a seconda del valore di [Team]
   Color getTeamColor(Team team, bool mode) {
     switch (team) {
       case Team.onSite:
@@ -150,6 +163,7 @@ class JobPosition extends AdsModel {
     }
   }
 
+  /// ritorna un [Color] a seconda del valore di [ContractType]
   Color getContractColor(ContractType contract, bool mode) {
     switch (contract) {
       case ContractType.partTime:

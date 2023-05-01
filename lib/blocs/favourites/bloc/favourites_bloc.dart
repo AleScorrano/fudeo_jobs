@@ -9,6 +9,11 @@ part 'favourites_event.dart';
 part 'favourites_state.dart';
 
 class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
+  ///
+  /// [Bloc] utilizzato per gestire le liste dei preferiti degli oggetti [JobPosition] e [FreelancePosition]
+  /// ha come dipendenze [jobAdsBloc] e [freelanceAdsBloc] per accedere ei rispettiv controller delle liste.
+  /// e [adsRepository] per scaricare gli annunci dalle api.
+  ///
   final AdsRepository adsRepository;
   final JobAdsBloc jobAdsBloc;
   final FreelanceAdsBloc freelanceAdsBloc;
@@ -20,6 +25,9 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
     on<FetchingFavouritesEvent>(_getAds);
   }
 
+  /// metodo per inizializzare le liste con gli annunci aggiunti nei preferiti
+  /// inizializza le liste nei controller dei bloc con gli annunci già presenti in memoria.
+  /// scarica anche gli annunci non ancora restituiti con la paginazione tramite il repository [adsRepository]
   FutureOr<void> _getAds(
       FetchingFavouritesEvent event, Emitter<FavouritesState> emit) async {
     try {
@@ -39,5 +47,6 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
     }
   }
 
+  /// meotdo che aggiunge l'evento [FetchingFavouritesEvent] al [Bloc]
   void getAds() => add(FetchingFavouritesEvent());
 }

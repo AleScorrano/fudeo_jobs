@@ -2,12 +2,13 @@ import 'dart:io';
 
 import 'package:annunci_lavoro_flutter/blocs/favourite_storage/bloc/favourites_storage_bloc.dart';
 import 'package:annunci_lavoro_flutter/blocs/jobAds/bloc/job_ads_bloc.dart';
+import 'package:annunci_lavoro_flutter/models/ads_description.dart';
 import 'package:annunci_lavoro_flutter/models/favourites_store_model.dart';
 import 'package:annunci_lavoro_flutter/models/job_positions_model.dart';
-import 'package:annunci_lavoro_flutter/widgets/contract_container.dart';
+import 'package:annunci_lavoro_flutter/widgets/color_containers/contract_container.dart';
 import 'package:annunci_lavoro_flutter/widgets/dialog_and_bottomsheet/link_error_dialog.dart';
-import 'package:annunci_lavoro_flutter/widgets/seniority_container.dart';
-import 'package:annunci_lavoro_flutter/widgets/team_container.dart';
+import 'package:annunci_lavoro_flutter/widgets/color_containers/seniority_container.dart';
+import 'package:annunci_lavoro_flutter/widgets/color_containers/team_container.dart';
 import 'package:easy_rich_text/easy_rich_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +19,11 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class JobAdsSheet extends StatefulWidget {
+  ///
+  /// bottomSheet che mostra i dettagli di un annuncio di tipo [JobPosition]
+  ///
+  /// consente anche di salvare l'annuncio candidarsi, e condividerlo con app di terze parti.
+  ///
   final JobPosition jobPosition;
   const JobAdsSheet({
     super.key,
@@ -94,7 +100,8 @@ class _JobAdsSheetState extends State<JobAdsSheet> {
                     data: widget.jobPosition.ral,
                     icon: FontAwesomeIcons.moneyBills,
                   ),
-                  _description()
+                  _richTextDescription(
+                      'Descrizione Offerta', widget.jobPosition.adsDescription)
                 ],
               ),
             ),
@@ -114,6 +121,7 @@ class _JobAdsSheetState extends State<JobAdsSheet> {
         ],
       );
 
+  /// bottone che indirizza direttamente al link della candidatura.
   Widget _applyButton() => Expanded(
         child: InkWell(
           onTap: _aplly,
@@ -147,6 +155,7 @@ class _JobAdsSheetState extends State<JobAdsSheet> {
         ),
       );
 
+  /// bottone che aggiunge o rimuove l'annuncio dai preferiti.
   Widget _favouriteButton() => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Expanded(
@@ -349,6 +358,7 @@ class _JobAdsSheetState extends State<JobAdsSheet> {
         ),
       );
 
+  /// bottone che permette all'utente di condividere l'annuncio tramite app di terze parti.
   Widget _shareButton() => Positioned(
         top: 6,
         right: 20,
@@ -362,7 +372,9 @@ class _JobAdsSheetState extends State<JobAdsSheet> {
         ),
       );
 
-  Widget _description() => Padding(
+  /// widget che visualizza un oggetto di tipo [RichTextDescription]
+  Widget _richTextDescription(String label, RichTextDescription content) =>
+      Padding(
         padding: const EdgeInsets.only(bottom: 26.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -376,7 +388,7 @@ class _JobAdsSheetState extends State<JobAdsSheet> {
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  'Descrizione Offerta',
+                  label,
                   style: Theme.of(context).textTheme.labelLarge!.copyWith(
                       fontWeight: FontWeight.w500,
                       fontSize: 22,
@@ -386,25 +398,22 @@ class _JobAdsSheetState extends State<JobAdsSheet> {
             ),
             const SizedBox(height: 12),
             EasyRichText(
-              widget.jobPosition.adsDescription.descriptionText,
+              content.descriptionText,
               textScaleFactor: 1.1,
               defaultStyle: Theme.of(context).textTheme.titleLarge,
               patternList: List.generate(
-                widget.jobPosition.adsDescription.descriptionAnnotations.length,
+                content.descriptionAnnotations.length,
                 (index) => EasyRichTextPattern(
                   hasSpecialCharacters: true,
-                  targetString: widget.jobPosition.adsDescription
-                      .descriptionAnnotations[index]['text'],
+                  targetString: content.descriptionAnnotations[index]['text'],
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      fontStyle: widget.jobPosition.adsDescription
-                                      .descriptionAnnotations[index]
+                      fontStyle: content.descriptionAnnotations[index]
                                   ['annotations']['italic'] ==
                               true
                           ? FontStyle.italic
                           : null,
                       fontSize: 20,
-                      fontWeight: widget.jobPosition.adsDescription
-                                      .descriptionAnnotations[index]
+                      fontWeight: content.descriptionAnnotations[index]
                                   ['annotations']['bold'] ==
                               true
                           ? FontWeight.bold
@@ -416,6 +425,7 @@ class _JobAdsSheetState extends State<JobAdsSheet> {
         ),
       );
 
+  /// metodo che aggiunge l'annuncio ai preferiti.
   void _addToFavourite() {
     widget.jobPosition.isFavourite = true;
     setState(() {});
@@ -429,6 +439,7 @@ class _JobAdsSheetState extends State<JobAdsSheet> {
     HapticFeedback.heavyImpact();
   }
 
+  /// metodo che rimuove l'annuncio dai preferiti.
   void _removeFromFavourite() {
     widget.jobPosition.isFavourite = false;
     setState(() {});
@@ -442,6 +453,7 @@ class _JobAdsSheetState extends State<JobAdsSheet> {
     HapticFeedback.heavyImpact();
   }
 
+  /// metodo che apre la webview al link della candidatura.
   Future<void> _aplly() async {
     final Uri _url = Uri.parse(widget.jobPosition.applyLink);
     if (!await launchUrl(_url)) {

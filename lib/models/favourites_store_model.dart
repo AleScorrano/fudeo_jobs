@@ -1,6 +1,10 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class FavouriteStoreModel {
+  ///
+  /// classe di servizio che riceve l'id dell'annuncio e del database di riferimento
+  /// e inizializza una variabile con il tipo di annuncio.
+  ///
   final String id;
   final String dataBaseId;
   late String adsType;

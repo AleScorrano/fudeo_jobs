@@ -1,11 +1,14 @@
 import 'package:annunci_lavoro_flutter/blocs/jobAds/bloc/job_ads_bloc.dart';
+import 'package:annunci_lavoro_flutter/cubits/first_start_cubit.dart';
 import 'package:annunci_lavoro_flutter/models/job_positions_model.dart';
 import 'package:annunci_lavoro_flutter/utils/sliver_appbar_delagate.dart';
-import 'package:annunci_lavoro_flutter/widgets/list_tile/job_ads_tile.dart';
+import 'package:annunci_lavoro_flutter/widgets/cards/job_ads_card.dart';
 import 'package:annunci_lavoro_flutter/widgets/drop_down/contract_drop_down.dart';
 import 'package:annunci_lavoro_flutter/widgets/dialog_and_bottomsheet/modal_bottom_sort.dart';
 import 'package:annunci_lavoro_flutter/widgets/drop_down/seniority_drop_down.dart';
 import 'package:annunci_lavoro_flutter/widgets/shimmers/shimmed_list.dart';
+import 'package:annunci_lavoro_flutter/widgets/showcase/show_case_view.dart';
+import 'package:annunci_lavoro_flutter/widgets/showcase/showcase_tile.dart';
 import 'package:annunci_lavoro_flutter/widgets/sort_icon.dart';
 import 'package:annunci_lavoro_flutter/widgets/drop_down/team_drop_down.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,8 +16,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 class JobAdsPage extends StatefulWidget {
+  ///
+  /// pagina che mostra gli annunci di tipo [JobPosition].
+  ///
+  /// inizializza due [ScrollController]:
+  /// [_adsListController] per gestire lo scroll della lista degli annunci.
+  /// [_actionBarController]  per gestire lo scroll dell'actionsBar
+  ///
+  /// inizializza un [TextEditingController] [_searchFieldController] per il [TextField] di ricerca, da [FreelanceAdsBloc]
+  ///
+  /// inizializza le [Globalkey] che verranno utilizzate per indicare quali elementi visualizzare nel tutorial iniziale.
+  ///
   const JobAdsPage({super.key});
 
   @override
@@ -24,10 +39,23 @@ class JobAdsPage extends StatefulWidget {
 class _JobAdsPageState extends State<JobAdsPage> {
   final ScrollController _adsListController = ScrollController();
   final ScrollController _actionBarController = ScrollController();
+  final GlobalKey _fabKey = GlobalKey();
+  final GlobalKey _filterskey = GlobalKey();
+  final GlobalKey _sortButtonKey = GlobalKey();
+  final GlobalKey _adsTileKey = GlobalKey();
+  final GlobalKey _searchKey = GlobalKey();
+  final GlobalKey _favouriteButtonKey = GlobalKey();
   late TextEditingController _searchFieldController;
+  late bool showTutorial;
   final FocusNode _searchFieldFocusNode = FocusNode();
+
+  /// per mostrare l'header quando si scrlla verso l'alto.
   bool _showHeader = true;
+
+  /// per mostrare o meno [_searchFieldController]
   bool _showTextFiled = false;
+
+  /// per disbilitare il tap su  [_adsList] mentre si sta scrivendo nel [TextField] di ricerca.
   bool _enableListTap = true;
 
   @override
@@ -36,6 +64,10 @@ class _JobAdsPageState extends State<JobAdsPage> {
     _searchFieldController =
         BlocProvider.of<JobAdsBloc>(context).jobAdsController.searchController;
 
+    /// aggiungo un listener ad [_adsListController] per mostrare o nascondere l'header
+    /// a seconda della direzione dello scroll.
+    ///
+    /// chiamo il metodo  che scarica altri annunci quando lo scroll della lista è alla fine.
     _adsListController.addListener(
       () {
         if (_adsListController.position.userScrollDirection ==
@@ -56,6 +88,24 @@ class _JobAdsPageState extends State<JobAdsPage> {
         }
       },
     );
+
+    showTutorial = BlocProvider.of<FirstStartCubit>(context).state;
+
+    /// metodo che fa partire il tutorial solo al primo avvio dell'app.
+    if (showTutorial) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => ShowCaseWidget.of(context).startShowCase(
+          [
+            _filterskey,
+            _sortButtonKey,
+            _searchKey,
+            _adsTileKey,
+            _favouriteButtonKey,
+            _fabKey,
+          ],
+        ),
+      );
+    }
   }
 
   @override
@@ -65,37 +115,14 @@ class _JobAdsPageState extends State<JobAdsPage> {
           current is FetchInitialJobAdsEvent || current is FetchedJobAdsState,
       builder: (context, state) {
         if (state is InitJobAdsState) {
-          return ShimmedList(child: JobAdsTile.shimmed());
+          return ShimmedList(child: JobAdsCard.shimmed());
         } else if (state is ErrorJobAdsState) {
           return _errorWidget();
         } else if (state is FetchedJobAdsState || state is NoMoreJobAdsState) {
           return Scaffold(
             floatingActionButton:
                 _showHeader && _showTextFiled == false ? _fab() : null,
-            body: CustomScrollView(
-              physics:
-                  _showTextFiled ? const NeverScrollableScrollPhysics() : null,
-              controller: _adsListController,
-              slivers: [
-                _showHeader
-                    ? SliverPersistentHeader(
-                        floating: true,
-                        delegate: SliverAppBarDelegate(
-                          color: Theme.of(context).cardColor,
-                          minHeight: 106,
-                          maxHeight: 106,
-                          child: Column(
-                            children: [
-                              _header(),
-                              _actionsBar(),
-                            ],
-                          ),
-                        ),
-                      )
-                    : const SliverToBoxAdapter(),
-                _adsList(),
-              ],
-            ),
+            body: _body(),
           );
         }
         return const SizedBox();
@@ -103,6 +130,35 @@ class _JobAdsPageState extends State<JobAdsPage> {
     );
   }
 
+  Widget _body() {
+    return CustomScrollView(
+      physics: _showTextFiled ? const NeverScrollableScrollPhysics() : null,
+      controller: _adsListController,
+      slivers: [
+        _showHeader
+            ? SliverPersistentHeader(
+                floating: true,
+                delegate: SliverAppBarDelegate(
+                  color: Theme.of(context).cardColor,
+                  minHeight: 106,
+                  maxHeight: 10,
+                  child: Column(
+                    children: [
+                      _header(),
+                      _actionsBar(),
+                    ],
+                  ),
+                ),
+              )
+            : const SliverToBoxAdapter(),
+        SliverToBoxAdapter(child: SizedBox(height: 10)),
+        _adsList(),
+        SliverToBoxAdapter(child: SizedBox(height: 70)),
+      ],
+    );
+  }
+
+  /// [Widget] che mostra l'actionbar con i Dropdown per i filtri il [TextField] e il bottone per mostrarlo.
   Widget _actionsBar() => Expanded(
         child: ListView(
           physics: const NeverScrollableScrollPhysics(),
@@ -116,15 +172,22 @@ class _JobAdsPageState extends State<JobAdsPage> {
         ),
       );
 
-  Widget _toggleSearchButton() => IconButton(
-        onPressed: () => _showTextFiled ? _remTextField() : _showField(),
-        icon: _showTextFiled
-            ? const Icon(
-                FontAwesomeIcons.close,
-              )
-            : const Icon(FontAwesomeIcons.search),
+  /// bottone per mostrare il [_searchField] o nasconderlo.
+  Widget _toggleSearchButton() => ShowCaseView(
+        title: 'Ricerca',
+        globalKey: _searchKey,
+        description: 'Cerca tra gli annunci per parola chiave',
+        child: IconButton(
+          onPressed: () => _showTextFiled ? _remTextField() : _showField(),
+          icon: _showTextFiled
+              ? const Icon(
+                  FontAwesomeIcons.close,
+                )
+              : const Icon(FontAwesomeIcons.search),
+        ),
       );
 
+  /// [TextField] per la ricerca.
   Widget _searchField() => Container(
         width: MediaQuery.of(context).size.width - 66,
         margin: const EdgeInsets.only(top: 12, bottom: 12, right: 20),
@@ -167,18 +230,25 @@ class _JobAdsPageState extends State<JobAdsPage> {
         ),
       );
 
-  Widget _sortButton() => SizedBox(
-        height: 32,
-        child: TextButton(
-          onPressed: () => showModalBottomSheet(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14)),
-              context: context,
-              builder: (context) => const SortingModalBottomSheet()),
-          child: const SortIcon(),
+  /// bottone per mostrare la bottomsheet con i bottoni per aggiungere i criteri di ordinamento.
+  Widget _sortButton() => ShowCaseView(
+        globalKey: _sortButtonKey,
+        title: 'Ordina gli annunci',
+        description: 'tocca qui per ordinare gli annunci',
+        child: SizedBox(
+          height: 32,
+          child: TextButton(
+            onPressed: () => showModalBottomSheet(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14)),
+                context: context,
+                builder: (context) => const SortingModalBottomSheet()),
+            child: const SortIcon(),
+          ),
         ),
       );
 
+  /// Header che mostra il numero di annunci disponibili.
   Widget _header() => Container(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -200,7 +270,7 @@ class _JobAdsPageState extends State<JobAdsPage> {
                             style: Theme.of(context).textTheme.titleLarge,
                           )
                         : Text(
-                            'Posizioni aperte aaa}',
+                            'Posizioni aperte ' '}',
                             style: Theme.of(context)
                                 .textTheme
                                 .titleLarge!
@@ -220,24 +290,37 @@ class _JobAdsPageState extends State<JobAdsPage> {
         ),
       );
 
-  Widget _fab() => FloatingActionButton.small(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        backgroundColor: Theme.of(context).primaryColor,
-        onPressed: () => _adsListController.animateTo(0.0,
-            duration: const Duration(milliseconds: 300), curve: Curves.easeOut),
-        child: const Icon(
-          Icons.arrow_upward_rounded,
-          color: Colors.white,
+  Widget _fab() => ShowCaseView(
+        title: 'Torna in cima',
+        globalKey: _fabKey,
+        description: "tocca qui per ritornare all'inizio della lista",
+        child: FloatingActionButton.small(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          backgroundColor: Theme.of(context).primaryColor,
+          onPressed: () => _adsListController.animateTo(0.0,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut),
+          child: const Icon(
+            Icons.arrow_upward_rounded,
+            color: Colors.white,
+          ),
         ),
       );
 
-  Widget _dropDownFilters() => Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          TeamDropDown(),
-          SeniorityDropDown(),
-          ContractDropDown(),
-        ],
+  /// [Widget] che contiene i Dropdown per i filtri.
+  Widget _dropDownFilters() => ShowCaseView(
+        title: 'Filtri',
+        globalKey: _filterskey,
+        description: 'Filtra gli annunci facilmente',
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            TeamDropDown(),
+            SeniorityDropDown(),
+            ContractDropDown(),
+          ],
+        ),
       );
 
   Widget _divider() => Row(
@@ -255,6 +338,7 @@ class _JobAdsPageState extends State<JobAdsPage> {
         ],
       );
 
+  /// [Widget] che mostra gli annunci disponibili passati dal flusso dello Stream.
   Widget _adsList() => BlocConsumer<JobAdsBloc, JobAdsState>(
         listener: (context, state) {
           if (state is NoMoreJobAdsState) {
@@ -277,10 +361,30 @@ class _JobAdsPageState extends State<JobAdsPage> {
                                   ? _noMoreAdsWidget()
                                   : const SizedBox();
                         }
-                        return JobAdsTile(
-                          jobPosition: snapshot.data![index],
-                          enabled: _enableListTap,
-                        );
+                        return index != 0
+                            ? JobAdsCard(
+                                jobPosition: snapshot.data![index],
+                                enabled: _enableListTap,
+                              )
+                            : showTutorial
+                                ? BlocBuilder<FirstStartCubit, bool>(
+                                    builder: (context, isFirststart) {
+                                      return isFirststart
+                                          ? ShowcaseTile(
+                                              cardGlobalkey: _adsTileKey,
+                                              buttonglobalKey:
+                                                  _favouriteButtonKey)
+                                          : JobAdsCard(
+                                              jobPosition:
+                                                  snapshot.data![index],
+                                              enabled: _enableListTap,
+                                            );
+                                    },
+                                  )
+                                : JobAdsCard(
+                                    jobPosition: snapshot.data![index],
+                                    enabled: _enableListTap,
+                                  );
                       },
                     )
                   : _noAdsWidget();
@@ -289,6 +393,7 @@ class _JobAdsPageState extends State<JobAdsPage> {
         },
       );
 
+  /// [Widget] che indica che non sono presenti annunci.
   Widget _noAdsWidget() => SliverFillRemaining(
         child: Expanded(
           child: Column(
@@ -313,6 +418,7 @@ class _JobAdsPageState extends State<JobAdsPage> {
         ),
       );
 
+  /// [Widget] che indica all'utente che sono stati scaricati tutti gli annunci.
   Widget _noMoreAdsWidget() => Padding(
         padding: const EdgeInsets.only(top: 10.0, bottom: 40),
         child: Column(
@@ -332,6 +438,7 @@ class _JobAdsPageState extends State<JobAdsPage> {
         ),
       );
 
+  /// [Widget] che mostra un indicatore di caricamento alla fine della lista mentre si stanno scaricando altri annunci.
   Widget _loadingAdsWidget() => Padding(
         padding: const EdgeInsets.all(20),
         child: Center(
@@ -340,6 +447,7 @@ class _JobAdsPageState extends State<JobAdsPage> {
         ),
       );
 
+  /// [SnackBar] che viene mostrata per avvisare l'utente che sono stati scaricati tutti gli annunci.
   SnackBar _snackBar() => SnackBar(
         behavior: SnackBarBehavior.floating,
         margin: const EdgeInsets.all(10),
@@ -368,6 +476,7 @@ class _JobAdsPageState extends State<JobAdsPage> {
         ),
       );
 
+  /// [Widget] che indica uno stato di errore.
   Widget _errorWidget() => const Center(
           child: Column(
         children: [
@@ -376,6 +485,7 @@ class _JobAdsPageState extends State<JobAdsPage> {
         ],
       ));
 
+  /// metodo che chiama la funzione del [JobAdsBloc] per richiedere altri annunci.
   void moreAds() {
     BlocProvider.of<JobAdsBloc>(context).moreAds();
     _adsListController.animateTo(
@@ -385,6 +495,7 @@ class _JobAdsPageState extends State<JobAdsPage> {
     );
   }
 
+  /// metodo per mostrare [_searchField]
   void _showField() {
     setState(() {
       _showTextFiled = true;
@@ -395,6 +506,7 @@ class _JobAdsPageState extends State<JobAdsPage> {
         duration: const Duration(milliseconds: 500), curve: Curves.decelerate);
   }
 
+  /// metodo per nascondere [_searchField]
   void _remTextField() {
     setState(
       () {

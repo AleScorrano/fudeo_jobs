@@ -5,14 +5,17 @@ import 'package:annunci_lavoro_flutter/blocs/freelanceAds/bloc/freelance_ads_blo
 import 'package:annunci_lavoro_flutter/blocs/jobAds/bloc/job_ads_bloc.dart';
 import 'package:annunci_lavoro_flutter/models/freelance_positions_model.dart';
 import 'package:annunci_lavoro_flutter/models/job_positions_model.dart';
-import 'package:annunci_lavoro_flutter/widgets/list_tile/freelance_ads_tile.dart';
-import 'package:annunci_lavoro_flutter/widgets/list_tile/job_ads_tile.dart';
+import 'package:annunci_lavoro_flutter/widgets/cards/freelance_ads_card.dart';
+import 'package:annunci_lavoro_flutter/widgets/cards/job_ads_card.dart';
 import 'package:annunci_lavoro_flutter/widgets/shimmers/shimmed_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:group_button/group_button.dart';
 
 class FavouritePage extends StatefulWidget {
+  ///
+  /// pagina che contiene gli annunci preferiti di tipo [JobPosition] e [FreeLancePosition].
+  ///
   static String routeName = 'favourite';
   const FavouritePage({super.key});
 
@@ -74,6 +77,7 @@ class _FavouritePageState extends State<FavouritePage> {
         ),
       );
 
+  /// [GroupButton] utilizzato per scegliere se visualizzare gli annunci [FreeLancePosition] o [JobPosition] oppure entrambi.
   Widget _selctionButtons() => Container(
         margin: const EdgeInsets.only(bottom: 4),
         child: GroupButton(
@@ -117,7 +121,7 @@ class _FavouritePageState extends State<FavouritePage> {
         builder: (context, state) {
           if (state is FetchingFavState) {
             return ShimmedList(
-              child: JobAdsTile.shimmed(),
+              child: JobAdsCard.shimmed(),
             );
           } else if (state is FetchedFavState) {
             return CustomScrollView(
@@ -152,7 +156,7 @@ class _FavouritePageState extends State<FavouritePage> {
               return SliverList.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
-                  return JobAdsTile(
+                  return JobAdsCard(
                       jobPosition: snapshot.data![index], enabled: true);
                 },
               );
@@ -178,7 +182,7 @@ class _FavouritePageState extends State<FavouritePage> {
             } else {
               return SliverList.builder(
                 itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) => FreelanceAdsTile(
+                itemBuilder: (context, index) => FreelanceAdsCard(
                     freeLancePosition: snapshot.data![index], enabled: true),
                 //separatorBuilder: (context, index) => _listDivider(),
               );

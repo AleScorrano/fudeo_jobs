@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class LinkErrorDialog extends StatelessWidget {
+  ///
+  /// dialog che avvisa l'utente di un eventaule errore nell'apertura di un link
+  ///
   const LinkErrorDialog({super.key});
 
   @override

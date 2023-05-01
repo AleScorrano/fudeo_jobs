@@ -4,6 +4,12 @@ import 'package:annunci_lavoro_flutter/models/favourites_store_model.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 class FavouritesStorageBloc
+
+    ///
+    /// [HydratedBloc] utilizzato per salvare gli annunci preferiti in memoria.
+    ///
+    /// salva degli oggetti di tipo [FavouriteStoreModel] per conservare anche il tipo di annuncio oltre all'id.
+    ///
     extends HydratedBloc<FavouritesStorageEvent, FavouritesStorageState> {
   FavouritesStorageBloc() : super(const FavouritesStorageState()) {
     on((event, emit) {

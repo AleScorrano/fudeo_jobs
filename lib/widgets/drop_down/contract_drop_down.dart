@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ContractDropDown extends StatefulWidget {
+  ///
+  /// dropdown per aggiungere i filtri di tipo [ContractType]
+  ///
   final String hintText = 'Contratto';
   final List<String> items = ['Part time', 'Full time'];
   ContractDropDown({
@@ -40,7 +43,6 @@ class _ContractDropDownState extends State<ContractDropDown> {
               items: widget.items.map((item) {
                 return DropdownMenuItem<String>(
                   value: item,
-                  //disable default onTap to avoid closing menu when selecting an item
                   enabled: false,
                   child: StatefulBuilder(
                     builder: (context, menuSetState) {
@@ -49,9 +51,8 @@ class _ContractDropDownState extends State<ContractDropDown> {
                         onTap: () {
                           isSelected ? removeFilter(item) : addFilter(item);
 
-                          //This rebuilds the StatefulWidget to update the button's text
                           setState(() {});
-                          //This rebuilds the dropdownMenu Widget to update the check mark
+
                           menuSetState(() {});
                         },
                         child: Container(
@@ -77,7 +78,6 @@ class _ContractDropDownState extends State<ContractDropDown> {
                   ),
                 );
               }).toList(),
-              //Use last selected item as the current value so if we've limited menu height, it scroll to last item.
               value: selectedItems.isEmpty ? null : selectedItems.last,
               onChanged: (value) {},
               selectedItemBuilder: (context) {
@@ -124,6 +124,7 @@ class _ContractDropDownState extends State<ContractDropDown> {
     );
   }
 
+  /// listener che mostra il circleAvatar per segnalare all'utente che è attivo ul filtro.
   Widget _filterActiveIndicator() => ValueListenableBuilder<bool>(
         valueListenable: BlocProvider.of<JobAdsBloc>(context)
             .jobAdsController
@@ -139,7 +140,7 @@ class _ContractDropDownState extends State<ContractDropDown> {
               )
             : const SizedBox()),
       );
-
+// metodo che aggiunge un filtro nella lista del controller.
   void addFilter(String item) {
     final ContractType? type = JobPosition.mapContractEnum(item);
 
@@ -151,6 +152,7 @@ class _ContractDropDownState extends State<ContractDropDown> {
     }
   }
 
+// metodo che rimuove un filtro nella lista del controller.
   void removeFilter(String item) {
     final ContractType? type = JobPosition.mapContractEnum(item);
 

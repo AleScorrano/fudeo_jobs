@@ -2,6 +2,9 @@ import 'package:annunci_lavoro_flutter/misc/dto.dart';
 import 'package:annunci_lavoro_flutter/models/matadata.dart';
 
 class JobsPositionsAdsDTO extends DTO {
+  ///
+  /// DTO per gli oggetti di tipo [JobPosition]
+  ///
   final String company;
   final String? jobLocation;
   final String? contractType;

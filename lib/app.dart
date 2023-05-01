@@ -1,7 +1,9 @@
 import 'package:annunci_lavoro_flutter/cubits/dark_mode_cubit.dart';
+import 'package:annunci_lavoro_flutter/cubits/first_start_cubit.dart';
 import 'package:annunci_lavoro_flutter/di/dependency_injector.dart';
 import 'package:annunci_lavoro_flutter/pages/favourite_page.dart';
 import 'package:annunci_lavoro_flutter/pages/home_page.dart';
+import 'package:annunci_lavoro_flutter/pages/welcome_carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,22 +15,31 @@ class App extends StatelessWidget {
   Widget build(_) {
     return DependencyInjector(
       child: _themeSelector(
-        (context, mode) => MaterialApp(
-          locale: const Locale('it_IT'),
-          debugShowCheckedModeBanner: false,
-          home: const HomePage(),
-          themeMode: mode,
-          theme: _theme(context),
-          darkTheme: _darkTheme(context),
-          onGenerateRoute: (settings) {
-            if (settings.name == FavouritePage.routeName) {
-              return PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) =>
-                    const FavouritePage(),
-              );
-            } else {
-              return null;
-            }
+        (context, mode) => BlocBuilder<FirstStartCubit, bool>(
+          builder: (context, startState) {
+            return MaterialApp(
+              locale: const Locale('it_IT'),
+              debugShowCheckedModeBanner: false,
+              home: startState ? WelcomeCarousel() : HomePage(),
+              themeMode: mode,
+              theme: _theme(context),
+              darkTheme: _darkTheme(context),
+              onGenerateRoute: (settings) {
+                if (settings.name == FavouritePage.routeName) {
+                  return PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        const FavouritePage(),
+                  );
+                } else if (settings.name == HomePage.routeName) {
+                  return PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        const HomePage(),
+                  );
+                } else {
+                  return null;
+                }
+              },
+            );
           },
         ),
       ),

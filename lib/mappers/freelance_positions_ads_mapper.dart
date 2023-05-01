@@ -5,6 +5,9 @@ import 'package:annunci_lavoro_flutter/services/network/dto/freelance_positions_
 
 class FreeLancePositionsAdsMapper
     extends DTOMapper<FreelancePositionsAdsDTO, FreeLancePosition> {
+  ///
+  /// classe concreta del mapper [DTOMapper] che ritorna un oggetto di tipo [FreeLancePosition]
+  ///
   FreeLancePositionsAdsMapper({required super.favouritesBloc});
 
   @override
