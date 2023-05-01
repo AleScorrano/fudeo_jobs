@@ -25,3 +25,12 @@ FUNZIONALITA'
 - condividione annunci tramite app di terze parti.
 - feedback aptico 
 
+UTILIZZO TOKEN API.
+
+- creare un file .env nella directory principale impostato nel seguente modo.
+
+
+NOTION_API_KEY=Bearer secret_<API TOEN>
+NOTION_VERSION=<NOTION VERSION>
+JOB_POSITIONS_DATABASE=<ID DATABASE ANNUNCI LAVORO>
+FREELANCE_POSITIONS_DATABASE=<ID DATABASE ANNUNCI FREELANCE>
